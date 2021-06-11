@@ -1,0 +1,42 @@
+name: "green-brown-blue"
+navbar:
+  title: "Transcriptomics analysis of pairs of Candida albicans clinical isolates"
+  type: inverse
+  left:
+    - text: "BRAUN"
+      menu:
+        - text: "Candida albicans"
+        - text: "TR VS FP"
+          href: BRAUN_ca_TRVFP.html
+        - text: "3-6hrs. VS 0hr."
+          href: BRAUN_ca_time.html
+        - text: "CEC3617 V CEC3605"
+          href: BRAUN_ca_3617V3605.html  
+        - text: "Homo sapiens"
+        - text: "3-6hrs. VS 0hr."
+          href: BRAUN_Hs_time.html
+        - text: "CEC3617 V CEC3605"
+          href: BRAUN_Hs_3617V3605.html
+    - text: "GREEN"
+      menu:
+        - text: "Candida albicans"
+        - text: "TR VS FP"
+          href: GREEN_ca_TRVFP.html
+        - text: "3-6hrs. VS 0hr."
+          href: GREEN_ca_time.html
+        - text: "CEC3678 V CEC3621"
+          href: GREEN_ca_3678V3621.html  
+        - text: "Homo sapiens"
+        - text: "3-6hrs. VS 0hr."
+          href: GREEN_Hs_time.html
+        - text: "CEC3678 V CEC3621"
+          href: GREEN_Hs_3678V3621.html
+    - text: "BLUE"
+      menu:
+        - text: "Candida albicans"
+        - text: "TR VS FP"
+          href: BLUE_ca_TRVFP.html
+        - text: "6-24hr VS 3hr"
+          href: BLUE_ca_time.html
+        - text: "CEC3609 V CEC3672"
+          href: BLUE_ca_3609V3672.html  

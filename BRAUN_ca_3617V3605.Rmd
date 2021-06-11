@@ -1,0 +1,180 @@
+---
+title: "BRAUN CEC3617 V CEC3605"
+output: 
+  flexdashboard::flex_dashboard:
+    navbar:
+      - { title: "Ca TR VS FP", href: "BRAUN_ca_TRVFP.html" , align: "right"}
+      - { title: "Ca 3-6hrs VS 0hrs", href: "BRAUN_ca_time.html" , align: "right"}
+      - { title: "Ca CEC3617 V CEC3605", href: "BRAUN_ca_3617V3605.html" , align: "right"}
+      - { title: "Hs 3-6hrs VS 0hrs", href: "BRAUN_Hs_time.html" , align: "right"}
+      - { title: "Hs CEC3617 V CEC3605", href: "BRAUN_Hs_3617V3605.html" , align: "right"}
+      - { title: "Main", href: "index.html" , align: "right"}
+    # self_contained: F
+    # vertical_layout: scroll
+# source: embed
+# widescreen: true
+# fig_width: 7
+# fig_height: 6
+# fig_caption: true
+df_print: kable
+# css: https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.duplicate.label = "allow")
+# Path and file names
+# root folder
+RootFolder=dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(RootFolder)
+
+# Load home made function and variable and libraries
+source(file.path("R", "RTools.R"))
+source(file.path("R","20200610-DGE_library_functions.R"))
+source(file.path("R","GO.R"))
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggsignif)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(RColorBrewer)
+library(org.Hs.eg.db)
+library(crosstalk)
+# Check Ca GO db is install 
+Data_dir=file.path("Data")
+
+if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
+  BuildCaGOdb_CP(OuputDir = Data_dir,
+                 ChromosomalFeatureFile="Data/20200528-C_albicans_SC5314_A22_current_chromosomal_feature.tab",
+                     GeneAssociationFile="Data/20201123-CGD_gene_association.cgd",
+                     NCBIGeneList="Data/20201107-NCBI_GeneList.tab"
+                )
+  install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
+}
+```
+
+```{r Var Ca BRAUN}
+Pair="BRAUN"
+# Path and file names
+# root folder
+# RootFolder="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Tests"
+# Output subfolder name
+# OutputFolder="Hs_3-6h_V_0h"
+# Outputfolder path
+# OutputFolderPath=file.path(RootFolder,OutputFolder)
+
+# Raw data table
+Path2Data=file.path(Data_dir,"20210109-Ca_GREEN_BRAUN_RawRead_Count.tab")
+# Table containing the list of sample ID and coresponding real names
+Path2SubTbl=file.path(Data_dir,"20200723-LIMS_Sample_Submission.tbl")
+# Read count table with corrected sample names
+RC_correctedSampleNames=paste0(Pair,"CountTable_SampleNames.tbl",collapse = "_")
+
+LoadDataFn=LoadRawReadCounts
+
+# Variable related to Normalisation, Differential expression analysis, clustering and the GO part
+# NORMALISATION
+# RegEx pattern enabling to extract the MetaData from samples real names
+RegexPattern="(?<Isolate>\\w{3}\\d{4})_(?<replicate>\\d{1})_(?<condition>\\w{2})_(?<time>\\d{1})"
+# RegEx pattern enabling to remove some sample from the analysis
+# ExcludeSampleRegex="(?<Isolate>\\w{3}(3621|3678))_(?<replicate>\\d+)"
+ExcludeSampleRegex="(?<Isolate>\\w{3}(3678|3621))_(?<replicate>\\d+)"
+# Metadata column to conserve in the "Genes" table. Renames the column to make it compatible with HomeMade functions
+GenesMetaData=c("Gene", "ORF19_ID","ASSEMBLY22_ID","Chr","Start", "End","Length","EntrezID","Note")
+Colnames4Genes=GenesMetaData
+# for Candida
+# Additional factor for the normalisation and DE
+AdditionalFact=c("Isolate","time", "condition")
+# Setup procedure
+#  create the directory if require and set the folder as working directory
+# dir.create(OutputFolderPath,showWarnings = F)
+```
+
+Normalisation {.storyboard}
+=====================================
+
+```{r BRAUN Ca normalisation, child="R/20210526-Normalisation.Rmd"}
+```
+
+
+Differential gene expression analysis {.storyboard}
+=====================================
+
+```{r setup DEG Time"}
+
+# DEG
+NameSharedData="Ca_Strain"
+# Variable for the contrast map to define the comparaison to perform
+DE_Contrast_Cond=AdditionalFact
+Ref=c("CEC3605", 0,"FP")
+# Sample="Conditions"
+# Select the main comparaison variable
+MainComparaison="Isolate"
+SecondaryComparaison=AdditionalFact[2:3]
+# define the log2FC cutoff and the pvalue cutoff
+LFC_Cutoff=0.5
+pVal_Cutoff=0.05
+# Clustering
+# Number of cluster
+ClustNumb=8
+# distance method
+DistMethod="manhattan"
+# agglomeration method
+# AggloMethod="ward.D"
+AggloMethod="centroid"
+# Decide Cutoff. for example if 3 , gene is selected if differentially expressed in 1/3 of conditions
+Factor_Numb_Conditions_gene_diff_expressed=3
+# pattern to extract chromosome name
+Pattern_X="chr([^_]{1,2})"
+```
+
+```{r KnitDEG Ca Time, child="R/20210526-DEG.Rmd"}
+```
+
+GO
+=====================================
+
+```{r GO Ca Time setup}
+#  GO enrichment
+# library(org.Calbicans.eg.db)
+OrgDb=org.Calbicans.eg.db::org.Calbicans.eg.db
+keytype="GID"
+GO_pValue=0.2
+GO_qValue=GO_pValue
+MinGO=10
+MaxGO=50
+# STRING
+STRING_DB=string_db_Ca
+StringConnection=50
+```
+
+```{r prepare Go Ca Time, child="R/20210608-GO.Rmd"}
+```
+
+```{r Plot GO Ca Time ,child="R/20210608-GO_Plots_Interactive.Rmd"}
+```
+
+Gene Networks
+=====================================
+
+Column {.tabset}
+-------------------------------------
+
+```{r Plot GO Ca Time,  comment='', echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+out = NULL
+for (i in ClustersID) {
+  C=i
+  if (length(PlotList[[as.character(C)]])<2){
+    print("No GO emerge from that list of gene")
+  }else{
+    out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
+  }
+}
+cat(knit(text=unlist(paste(out, collapse = '\n')), quiet=TRUE))
+
+```
+
+

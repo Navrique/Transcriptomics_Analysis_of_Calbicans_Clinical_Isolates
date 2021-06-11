@@ -1,0 +1,128 @@
+---
+title: "GREEN Human CEC3678 V CEC3621"
+output: 
+  flexdashboard::flex_dashboard:
+     navbar:
+      - { title: "Ca TR VS FP", href: "GREEN_ca_TRVFP.html" , align: "right"}
+      - { title: "Ca 3-6hrs VS 0hrs", href: "GREEN_ca_time.html" , align: "right"}
+      - { title: "Ca CEC3678 V CEC3621", href: "GREEN_ca_3678V3621.html" , align: "right"}
+      - { title: "Hs 3-6hrs VS 0hrs", href: "GREEN_Hs_time.html" , align: "right"}
+      - { title: "Hs CEC3678 V CEC3621", href: "GREEN_Hs_3678V3621.html" , align: "right"}
+      - { title: "Main", href: "index.html" , align: "right"}
+    # self_contained: F
+    # vertical_layout: scroll
+# source: embed
+# widescreen: true
+# fig_width: 7
+# fig_height: 6
+# fig_caption: true
+df_print: kable
+# css: https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.duplicate.label = "allow")
+# Path and file names
+# root folder
+RootFolder=dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(RootFolder)
+
+# Load home made function and variable and libraries
+source(file.path("R", "RTools.R"))
+source(file.path("R","20200610-DGE_library_functions.R"))
+source(file.path("R","GO.R"))
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggsignif)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(RColorBrewer)
+library(org.Hs.eg.db)
+library(crosstalk)
+# Check Ca GO db is install 
+Data_dir=file.path("Data")
+
+if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
+  BuildCaGOdb_CP(OuputDir = Data_dir)
+  install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
+}
+```
+
+Normalisation {.storyboard}
+=====================================
+
+```{r Var Hs GREEN}
+Pair="GREEN"
+# Path and file names
+# root folder
+# RootFolder="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Tests"
+# Output subfolder name
+# OutputFolder="Hs_3-6h_V_0h"
+# Outputfolder path
+# OutputFolderPath=file.path(RootFolder,OutputFolder)
+
+# Raw data table
+Path2Data=file.path(Data_dir,"20210109-Hs_GREEN_BRAUN_Raw_Read_Count.tab")
+# Table containing the list of sample ID and coresponding real names
+Path2SubTbl=file.path(Data_dir,"20200723-LIMS_Sample_Submission.tbl")
+# Read count table with corrected sample names
+RC_correctedSampleNames=paste0(Pair,"Hs_CountTable_SampleNames.tbl",collapse = "_")
+
+LoadDataFn=LoadRawReadCountsHs
+# Variable related to Normalisation, Differential expression analysis, clustering and the GO part
+# NORMALISATION
+# RegEx pattern enabling to extract the MetaData from samples real names
+RegexPattern="(?<Isolate>\\w{3}\\d{4})_(?<replicate>\\d{1})_TR_(?<time>\\d{1})"
+# RegEx pattern enabling to remove some sample from the analysis
+# ExcludeSampleRegex="(?<Isolate>\\w{3}(3621|3678))_(?<replicate>\\d+)"
+ExcludeSampleRegex="(3617_\\d{1}|3605_\\d{1}|3678_\\d{1}_FP|3621_\\d{1}_FP)"
+# Metadata column to conserve in the "Genes" table. Renames the column to make it compatible with HomeMade functions
+GenesMetaData=c(2:7, 10,12,15,16)
+Colnames4Genes=c("Chr","Start", "End", "Strand","Length", "Gene", "ASSEMBLY22_ID","Note","EntrezID", "ORF19_ID")
+# Additional factor for the normalisation and DE
+AdditionalFact=c("time", "Isolate")
+# pattern to extract chromosome name
+Pattern_X="\\w+"
+```
+
+
+```{r GREEN Hm normalisation, child="R/20210526-Normalisation.Rmd"}
+```
+
+Differential gene expression analysis {.storyboard}
+=====================================
+
+```{r setup DEG Hm Time}
+
+# DEG
+NameSharedData="Hm_strain"
+  # Variable for the contrast map to define the comparaison to perform
+DE_Contrast_Cond=AdditionalFact
+Ref=c( 0,"CEC3621")
+# Sample="Conditions"
+  # Select the main comparaison variable
+MainComparaison="Isolate"
+SecondaryComparaison=AdditionalFact
+  # define the log2FC cutoff and the pvalue cutoff
+LFC_Cutoff=0.5
+pVal_Cutoff=0.05
+# Clustering
+  # Number of cluster
+ClustNumb=2
+  # distance method
+DistMethod="manhattan"
+  # agglomeration method
+AggloMethod="centroid"
+  # Decide Cutoff. for example if 3 , gene is selected if differentially expressed in 1/3 of comparisons
+Factor_Numb_Conditions_gene_diff_expressed=3
+
+```
+
+
+```{r KnitDEG Hm Time, child="R/20210526-DEG.Rmd"}
+```
+
