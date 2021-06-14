@@ -97,7 +97,7 @@ BuildCandidaGOdb=function(SaveDir=Dest){
 # Finally, the goTable method is also new. That argument indicates when one of the data.frames contains GO information. If you choose to use this argument, makeOrgPackage() will post-process your GO data to 1) remove IDs that are too new and 2) create a second table to also represent the GOALL, EVIDENCEALL and ONTOLOGYALL fields for the select method etc. However to use the goTable argument, you have to follow a strict convention with the data. Such a data.frame must have three columns only and these must correspond to the gene id, GO id and evidence codes. These columns also have to be named as “GID”, “GO” and “EVIDENCE” Below is an example that parses an example file into three data.frame and that makes use of the goTable argument.
 BuildCaGOdb_CP=function(ChromosomalFeatureFile="Data/20200528-C_albicans_SC5314_A22_current_chromosomal_feature.tab",
                      GeneAssociationFile="Data/20201123-CGD_gene_association.cgd",
-                     NCBIGeneList="Data/20201107-NCBI_GeneList.txt",
+                     NCBIGeneList="Data/20201107-NCBI_GeneList.tab",
                      OuputDir="Data", TaxonID="237561"){
   # Path2Files="/media/edurandau/DATA/Eric_Durandau/Sanglard/Data/Sequencing/candida_ref"
   FChromosomalfeatures=file.path(ChromosomalFeatureFile)

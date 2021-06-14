@@ -49,6 +49,13 @@ if (Pair!= "BLUE"){
   Sample=sample.int(ncol(CountYeast), ncol(CountYeast))
   Sample=Sample[Sample>9]
   CountYeast=CountYeast[,c(1:9, Sample)]
+  if (str_detect(CountYeast$Geneid[1], "ENS")){
+    GeneID=CountYeast$Geneid
+    RM_GID=str_remove(GeneID, ".\\d+$")
+    CountYeast$Geneid=RM_GID
+    ENTREZID=clusterProfiler::bitr(RM_GID, fromType = "ENSEMBL", toType = c("ENTREZID", "SYMBOL"), OrgDb = org.Hs.eg.db)
+    CountYeast=merge(ENTREZID, CountYeast, by.x="ENSEMBL",by.y="Geneid")
+  }
   write.table(CountYeast, file.path("..", Data_dir,RC_correctedSampleNames), sep = "\t", row.names = F, col.names = T)
 }
 

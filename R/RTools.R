@@ -59,7 +59,7 @@ Packagelist=c("optimbase",
 InstallPackages(Packagelist)
 install_github("vqv/ggbiplot")
 
-library(optimbase)
+# library(optimbase)
 library(data.table)
 library(ggplot2)
 library(data.table)

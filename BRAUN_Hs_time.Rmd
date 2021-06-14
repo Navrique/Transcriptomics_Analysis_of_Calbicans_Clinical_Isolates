@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(knitr.duplicate.label = "allow")
 # Path and file names
 # root folder
-RootFolder=dirname(rstudioapi::getSourceEditorContext()$path)
+RootFolder=getwd()
 setwd(RootFolder)
 
 # Load home made function and variable and libraries

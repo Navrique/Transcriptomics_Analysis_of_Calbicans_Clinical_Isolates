@@ -5,7 +5,7 @@ output:
     navbar:
       - { title: "Ca TR VS FP", href: "BLUE_ca_TRVFP.html" , align: "right"}
       - { title: "Ca 6-24hr VS 3hr", href: "BLUE_ca_time.html" , align: "right"}
-      - { title: "Ca CEC3678 V CEC3621", href: "BLUE_ca_3609V3672.html" , align: "right"}
+      - { title: "Ca CEC3609 V CEC3672", href: "BLUE_ca_3609V3672.html" , align: "right"}
       - { title: "Main", href: "index.html" , align: "right"}
     # self_contained: F
     # vertical_layout: scroll
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(knitr.duplicate.label = "allow")
 # Path and file names
 # root folder
-RootFolder=dirname(rstudioapi::getSourceEditorContext()$path)
+RootFolder=getwd()
 setwd(RootFolder)
 
 # Load home made function and variable and libraries
@@ -72,7 +72,7 @@ LoadDataFn=LoadRawReadCounts
 # Variable related to Normalisation, Differential expression analysis, clustering and the GO part
 # NORMALISATION
 # RegEx pattern enabling to extract the MetaData from samples real names
-RegexPattern="(?<Isolate>\\w{3}\\d{4})_(?<replicate>\\d{1})_(?<condition>\\w{2})_(?<time>\\d{1})"
+RegexPattern="(?<Isolate>\\w{3}\\d{4})_(?<replicate>\\d{1})_(?<condition>\\w{2})_(?<time>\\d{1,2})"
 # RegEx pattern enabling to remove some sample from the analysis
 # ExcludeSampleRegex="(?<Isolate>\\w{3}(3621|3678))_(?<replicate>\\d+)"
 ExcludeSampleRegex="(_NI)"
