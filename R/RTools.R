@@ -17,6 +17,7 @@ InstallPackages=function(x){
   }
 }
 Packagelist=c("optimbase",
+              "flexdashboard",
               "ggnewscale",
               "kableExtra",
               "pheatmap",
@@ -57,7 +58,7 @@ Packagelist=c("optimbase",
               "M3C",
               "networkD3")
 InstallPackages(Packagelist)
-install_github("vqv/ggbiplot")
+remotes::install_github("vqv/ggbiplot")
 
 # library(optimbase)
 library(data.table)
