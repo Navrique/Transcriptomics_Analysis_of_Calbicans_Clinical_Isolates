@@ -17,13 +17,13 @@ InstallPackages=function(x){
   }
 }
 Packagelist=c("optimbase",
+              "rmarkdown",
               "flexdashboard",
               "ggnewscale",
               "kableExtra",
               "pheatmap",
               "Glimma",
               "dendextend",
-              "ggbiplot",
               "data.table", 
               "ggplot2",
               "MatrixEQTL",
