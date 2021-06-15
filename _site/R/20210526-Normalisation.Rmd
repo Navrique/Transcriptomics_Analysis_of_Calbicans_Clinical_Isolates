@@ -1,0 +1,196 @@
+
+### Normalisation 
+
+```{r BRAUN change sample IDs by sample real names, echo=F, warning=FALSE, message=FALSE}
+if (Pair!= "BLUE"){
+    # 5. Import the Sample submission table
+  # setwd(OutputFolderPath)
+  # print(file.path(getwd(), Path2SubTbl))
+  SampleID=read.delim(file.path("..", Path2SubTbl),sep = "\t",row.names = 2, header = F)
+  # 6. Correct readcount name
+  RC_Raw=read.delim(file.path("..", Path2Data),sep = "\t",header = T,skip = 1)
+  RC_ColVar=colnames(RC_Raw)
+  GetCoordStr=function(ToFind){
+  Coord=which(str_detect(RC_ColVar, paste0(ToFind,".bam")))
+  }
+  Coor=rapply(as.list(rownames(SampleID)), GetCoordStr)
+  colnames(RC_Raw)[Coor]=as.character(SampleID$V1)
+  # 7.save the corrected readcount table
+  write.table(RC_Raw, file= file.path("..", Data_dir,RC_correctedSampleNames), row.names =F, sep = "\t")
+}else{
+  CountYeast=read.delim(file.path("..", Path2Data))
+  SamplesMetadata=read.delim(file.path("..", Path2SubTbl))
+  
+  SampleNames=SamplesMetadata$Samples
+  
+  Condition=factor(rep("FP",length(SampleNames)), levels = c("FP", "TR"))
+  Time=factor(rep("3",length(SampleNames)),levels = c("3", "6", "24"))
+  Isolate=factor(rep("NI",length(SampleNames)),levels = c("NI", "CEC3609", "CEC3672"))
+  Replicates=factor(rep(c("1","2","3"),length(SampleNames)/3))
+  
+  Isolate[str_detect(SampleNames, "_72_")]=rep("CEC3672", sum(str_detect(SampleNames, "_72_")))
+  Isolate[str_detect(SampleNames, "_09_")]=rep("CEC3609", sum(str_detect(SampleNames, "_09_")))
+  Time[str_detect(SampleNames, "^6h_")]=rep("6", sum(str_detect(SampleNames, "^6h_")))
+  Time[str_detect(SampleNames, "^24h_")]=rep("24", sum(str_detect(SampleNames, "^24h_")))
+  Condition[str_detect(SampleNames, "_TR146_")]=rep("TR", sum(str_detect(SampleNames, "_TR146_")))
+  
+  
+  SampleNames2=data.frame(Isolate,Replicates, Condition, Time)
+  Samples=within(SampleNames2, Samples<-paste(Isolate,Replicates, Condition, Time,sep = "_"))
+  
+  for (i in SamplesMetadata$Well_info){
+    Bol = str_detect(colnames(CountYeast),paste0(".",i,".bam"))
+    colnames(CountYeast)[Bol]=Samples$Samples[SamplesMetadata$Well_info==i]
+  }
+  
+  # remove duplicated samples
+  CountYeast=CountYeast[!duplicated(colnames(CountYeast))]
+  #  mix column
+  Sample=sample.int(ncol(CountYeast), ncol(CountYeast))
+  Sample=Sample[Sample>9]
+  CountYeast=CountYeast[,c(1:9, Sample)]
+  if (str_detect(CountYeast$Geneid[1], "ENS")){
+    GeneID=CountYeast$Geneid
+    RM_GID=str_remove(GeneID, ".\\d+$")
+    CountYeast$Geneid=RM_GID
+    ENTREZID=clusterProfiler::bitr(RM_GID, fromType = "ENSEMBL", toType = c("ENTREZID", "SYMBOL"), OrgDb = org.Hs.eg.db)
+    CountYeast=merge(ENTREZID, CountYeast, by.x="ENSEMBL",by.y="Geneid")
+  }
+  write.table(CountYeast, file.path("..", Data_dir,RC_correctedSampleNames), sep = "\t", row.names = F, col.names = T)
+}
+
+
+```
+
+```{r BRAUNImport and normalise, echo=F, warning=FALSE, message=FALSE, fig.show='hide',results='hide'}
+# 8. Import the data
+RawData=LoadDataFn(file.path("..",Data_dir,RC_correctedSampleNames), MetaDataFromSampleName=RegexPattern, ExcludeSamples=ExcludeSampleRegex, skip = 0)
+# # before starting the normalisation we reduce the Gene table in order to conserve key informations
+Genes=RawData$Genes[,GenesMetaData]
+
+# modify variable names to make the gene table compatible with next functions
+colnames(Genes)= Colnames4Genes
+# rownames(Genes)=Genes$Gene
+
+NormData=ReadCountNormalisation(RawData$ReadCounts, RawData$MetaData, RawData$MetaData$Conditions, Genes, AdditionalFactor=AdditionalFact, Plots = T)
+# NormData$GGplot$Batch_effect_density
+
+# grid.arrange(arrangeGrob(grobs=NormData$GGplot$Batch_effect_heatmap ,ncol=2))
+
+```
+
+
+#### **Change Samples IDs by Sample names and save the table**
+
+Using the table furnished by Kontxi Martinez, Samples IDs are replaced by the experiment name in the *read courn* table. The experiment name follow the current pattern:
+
+- **Isolate**_**Replicate**_**Condition**_**Harvesting time**
+
+#### **Import the corrected table**
+
+The corrected *read count* table is imported. Only value of the `r Pair` pair are kept. The homemade function *LoadRawReadCounts()* is used for this.
+
+#### **Normalisation**
+
+Read count are normalized using the *ReadCountNormalisation()* homemade function
+
+- [ ] list of packages used
+- [ ] better description of the global procédure
+
+
+### Low reads filtering
+
+```{r BRAUNlow expressed genes,echo=F, warning=FALSE, message=FALSE,  fig.height=8, fig.width=13}
+NormData$GGplot$Low_Expression_Filtering
+```
+
+***
+The first step consist in removing features, here genes, with no or low reads in all samples. The sequencing detection limit is estimated at 10. This means that genes with less than 10 reads in all samples are considered as not expressed (or expressed under the detection limit) and are thus removed from the analyis. Here, `r sum(rowSums(NormData$Expressed_Genes)==0)` genes have been rejected. The filtering is based on the the [filterByExpr](https://rdrr.io/bioc/edgeR/man/filterByExpr.html) from the [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) packgage. The figure shows the density of gene read counts. Note the vertical line indicating the threshold used to sort out none expressed genes.
+
+### Sequencing depth
+
+```{r BRAUNsequencing depth,echo=F, warning=FALSE, message=FALSE,  fig.height=8, fig.width=13}
+NormData$GGplot$Library_size
+```
+
+***
+Barplot shows the whole number of read counts for each sample. Reads which are not associated to an annotated gene, are not considered in the calculation. 
+
+A filtering is also applied to identify and remove genes with less than 10 reads (see the [Low read filtering](#Low_reads_filtering) tab). Reads associated to these filtered out genes are rejected.
+
+
+### TMM based data correction
+
+```{r BRAUNTMM correction,echo=F, warning=FALSE, message=FALSE, fig.height=8, fig.width=13}
+NormData$GGplot$TMM_Correction
+```
+
+***
+  This step consist in removing the compositions bias using the TMM (Trimed mean  of M-value) [Robinson and Oshlack 2010](8https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25). In short, samples with different library size cannot be compared with each other. The process consist in normalise the read count such like each sample have artificially the same total number of reads.
+
+The [calcNormFactors](https://www.rdocumentation.org/packages/edgeR/versions/3.14.0/topics/calcNormFactors) from the [edgeR](https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) package has been used to perform this process.
+
+boxplot represent the distribution of genes **log2(cpm)**. **cpm** are *count per milion* of read.
+
+
+### Voom transform of read counts
+
+```{r BRAUNvoom transform,echo=F, warning=FALSE, message=FALSE, fig.height=8, fig.width=13 }
+NormData$GGplot$Voom_transform
+
+```
+
+***
+  
+  **Voom transform of counts : removing heteroscedascity from count data**
+  
+  The basic principle is to remove a bias related to the relationship between gene expression variance and gene expression mean. The more condition/replicate we have the better it is. *voom* aim at prepare the data for a further linear fit see chapter 6.2 of [RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR](https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/limmaWorkflow.html). This operation is performed using the [voom](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/voom) function from the [limma](https://www.bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf) package. 
+
+For a given data set with multiple samples, it is expected the average read count associated to a genes should not depend on its variance. More simply, the variability among samples should be similar for every genes and not depends on their average expression level. For RNAseq data, this relationship between variability and expression is unfortunaltely true (figure right). Lower will be global number of reads associated to a gene, higher will be the variability among samples. This may have an impact on p-value when comparing the expression of gene between two samples. 
+
+Voom transform attempt to correct for this bias. From the comparison of the standard deviation against the average read count of each gene, a model is built (right panel, red line) and used to correct read counts value (left panel).
+
+### Batch effect correction: PCA
+
+```{r BRAUNbatch PCA plot,echo=F, warning=FALSE, message=FALSE, fig.height=4, fig.width=10 }
+ggplotly(NormData$GGplot$Batch_effect_PCA,width =1400 , height = 700)
+```
+
+***
+  This step might not be essential since all samples are from the same batch. This can be interesting if sequencing files come from different runs or lanes. We will use the [SVA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3307112/) package to infer the batch effects. Very quickly sva estimate the number of covariate (surrogate variable) and then adjust value to remove the noise associated to such covariate. Then adjust for the batch effects using Surrogate variables. Here the strategy consist in let the algorithm estimate the potential batch variables rather than feeding it with known source of batch effect.
+
+Different visualisation can be used to observe the correction of the batch effect. The first is the PCA. PCA plot is a scatter where each dot is a sample. Ideally, all replicates from a given condition should appears close from each other, indicating a good reproducibility. Our strategy based on the estimation of variables inducing noise may reduced the distance between replicates on the PCA plot.
+
+### Batch effect correction: Density
+
+```{r BRAUNbatch density plot,echo=F, warning=FALSE, message=FALSE, fig.height=4, fig.width=10 }
+ggplotly(NormData$GGplot$Batch_effect_density,width =1400 , height = 700)
+```
+
+*** 
+  The second visualisation is the density plot. The is basically the density of gene count relative to the read count range (or log2(cpm)). The plot confirm the quality of the whole normalisation since all samples show similar density.
+
+### Batch effect correction: Correlation matrix
+
+```{r BRAUNbatch effect heatmap, echo=F, warning=FALSE, message=FALSE, fig.height=8, fig.width=15 }
+grid.arrange(arrangeGrob(grobs=NormData$GGplot$Batch_effect_heatmap ,ncol=2))
+```
+
+***
+  The last representation is the correlation matrix. A correlation coefficient is calculated between each samples combination. The resulting matrix of correlation coeficients is then visualised using a heatmap. A layer of Hierarchical clustering analysis has been performed on this matrix. This enables to sort rows and columns depending on the similarity of their correlation coefficients. Ideally the Heatmap should show samples from similar conditions close from each other. Note the improvement of the clustering after the batch effect correction. Note also that samples from similar experimental conditions cluster together, especially depending on the harvesting time. 
+  
+### Normalized Read count
+
+```{r Rm normalized read count, , echo=F, warning=FALSE, message=FALSE, fig.height=8, fig.width=15}
+NormRC=cbind(rownames(NormData$Norm_Data$E), NormData$Norm_Data$E)
+colnames(NormRC)[1]="Gene_ID"
+DT::datatable(NormRC, filter = "top",extensions = 'Buttons', 
+              options = list(columnDefs = list(list(className = 'dt-center', targets = 5)),dom = 'Blfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+  headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '1em');",
+    "}"
+  )
+), rownames = F)%>%
+  DT::formatStyle(columns = colnames(NormRC), fontSize = '100%')
+```
