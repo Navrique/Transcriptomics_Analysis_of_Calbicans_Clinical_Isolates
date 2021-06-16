@@ -1,22 +1,22 @@
 # The aim of this file is to define a library of functions that can be used to perform a differential gene expression analysis
-library(limma)
-library(edgeR)
-library(stringr)
-library(RColorBrewer)
-library(ggplot2)
-library(sva)
-library(pheatmap)
-library(hash)
-library(tidyr)
-library(grDevices)
-library(Glimma)
-# library(foreach)
-# library(doParallel)
-library(dendextend)
-library(gridExtra)
-library(ggbiplot)
-library(Hmisc)
-library(enrichplot)
+# library(limma)
+# library(edgeR)
+# library(stringr)
+# library(RColorBrewer)
+# library(ggplot2)
+# library(sva)
+# library(pheatmap)
+# library(hash)
+# library(tidyr)
+# library(grDevices)
+# library(Glimma)
+# # library(foreach)
+# # library(doParallel)
+# library(dendextend)
+# library(gridExtra)
+# library(ggbiplot)
+# library(Hmisc)
+# library(enrichplot)
 # library(M3C)
 # PathPrefix="/home/eduranda/Documents/SwitchDrive/CHUV/Sanglard_1/Notebook"
 PathPrefix="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook"
@@ -150,7 +150,7 @@ LoadRawReadCountsCg=function(Path2ReadCount,
   Metadata=data.frame(Metadata, stringsAsFactors = T)
   #build the condition column
   if (length(colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")])>1){
-    Metadata=unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
+    Metadata=tidyr::unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
   }
   else{
     Metadata$Conditions=Metadata[,colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")]]
@@ -188,10 +188,10 @@ LoadRawReadCountsCg=function(Path2ReadCount,
   RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]=RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]
   
   # Setup Output Variable in a hash() collection
-  Output=hash()
-  Output["MetaData"]=data.frame(Metadata, stringsAsFactors = T)
-  Output["ReadCounts"]=RawCountTabl
-  Output["Genes"]=SeqData
+  Output=list()
+  Output[["MetaData"]]=data.frame(Metadata, stringsAsFactors = T)
+   Output[["ReadCounts"]]=RawCountTabl
+   Output[["Genes"]]=SeqData
   return(Output)
 }
 
@@ -302,7 +302,7 @@ LoadRawReadCountsHs=function(Path2ReadCount,
   Metadata=data.frame(Metadata, stringsAsFactors = T)
   #build the condition column
   if (length(colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")])>1){
-    Metadata=unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
+    Metadata=tidyr::unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
   }
   else{
     Metadata$Conditions=Metadata[,colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")]]
@@ -340,10 +340,10 @@ LoadRawReadCountsHs=function(Path2ReadCount,
   RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]=RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]
   
   # Setup Output Variable in a hash() collection
-  Output=hash()
-  Output["MetaData"]=data.frame(Metadata, stringsAsFactors = T)
-  Output["ReadCounts"]=RawCountTabl
-  Output["Genes"]=SeqData
+  Output=list()
+  Output[["MetaData"]]=data.frame(Metadata, stringsAsFactors = T)
+   Output[["ReadCounts"]]=RawCountTabl
+   Output[["Genes"]]=SeqData
   return(Output)
 }
 
@@ -443,7 +443,7 @@ LoadRawReadCounts=function(Path2ReadCount,
   Metadata=data.frame(Metadata, stringsAsFactors = T)
   #build the condition colum
   
-  Metadata=unite(Metadata, "Conditions", colnames(Metadata)[!str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
+  Metadata=tidyr::unite(Metadata, "Conditions", colnames(Metadata)[!str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
   Metadata$Conditions=factor(Metadata$Conditions)
   # Add a color colum. A unique colors for each condition
   Metadata$Color=Metadata$Conditions
@@ -477,10 +477,10 @@ LoadRawReadCounts=function(Path2ReadCount,
   RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]=RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]
 
   # Setup Output Variable in a hash() collection
-  Output=hash()
-  Output["MetaData"]=data.frame(Metadata, stringsAsFactors = T)
-  Output["ReadCounts"]=RawCountTabl
-  Output["Genes"]=SeqData
+  Output=list()
+  Output[["MetaData"]]=data.frame(Metadata, stringsAsFactors = T)
+  Output[["ReadCounts"]]=RawCountTabl
+  Output[["Genes"]]=SeqData
   return(Output)
 }
 
@@ -591,7 +591,7 @@ LoadRawReadCountsSimp=function(Path2ReadCount,
   Metadata=data.frame(Metadata, stringsAsFactors = T)
   #build the condition column
   if (length(colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")])>1){
-    Metadata=unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
+    Metadata=tidyr::unite(Metadata, "Conditions", colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")], remove = F)
   }
   else{
     Metadata$Conditions=Metadata[,colnames(Metadata)[ !str_detect(colnames(Metadata), "ample|eplica|batch")]]
@@ -629,10 +629,10 @@ LoadRawReadCountsSimp=function(Path2ReadCount,
   RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]=RawCountTabl[,match(rownames(Metadata), colnames(RawCountTabl))]
   
   # Setup Output Variable in a hash() collection
-  Output=hash()
-  Output["MetaData"]=data.frame(Metadata, stringsAsFactors = T)
-  Output["ReadCounts"]=RawCountTabl
-  Output["Genes"]=SeqData
+  Output=list()
+  Output[["MetaData"]]=data.frame(Metadata, stringsAsFactors = T)
+   Output[["ReadCounts"]]=RawCountTabl
+   Output[["Genes"]]=SeqData
   return(Output)
 }
 
@@ -640,7 +640,7 @@ LoadRawReadCountsSimp=function(Path2ReadCount,
 # The output of the previous function is a collection of variable that can be used as input for data Normalisation
 ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalFactor=c(),Plots=T){
   # create output varible
-  Output=hash()
+  Output=list()
   # Convert the datatable to a DGElist object
   # DGEList enables to create an object of type S4 it. running the "DGEList("Data")" will create the object from a matrix of count. 
   # Rows need to be genes and Column correspond to the sample. We can view the names of Col and Row using dimname.DGEList(Object).
@@ -648,7 +648,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   if (sum(colnames(Metadata)=="condition")==0){
     Metadata$condition = "FP"
   }
-  DGE_RawCount=DGEList(ReadCounts)
+  DGE_RawCount=edgeR::DGEList(ReadCounts)
 # Add gene annotation
   # DGE_RawCount$genes = merge(DGE_RawCount$genes, Genes, by="row.names", all=T)
   DGE_RawCount$genes=Genes
@@ -667,9 +667,9 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   
                           # Normalisation of Data : remove lowly expressed genes
     # transform the raw reads count in CPM. Note that de function add an extra offset of 2/meanLibSize.
-  CPM=cpm(DGE_RawCount)
+  CPM=edgeR::cpm(DGE_RawCount)
     # same operation but returning log2 value. 2 reads are added to each observation to avoid "log0" if the some feature do note have reads.
-  Log2CPM= cpm(DGE_RawCount, log = T, prior.count = 2)
+  Log2CPM= edgeR::cpm(DGE_RawCount, log = T, prior.count = 2)
     # Calculating the average and median sequencing depth per million among all samples. This will be used to calculate a cutoff while comparing the expression pattern of the different sample
   Mean_SeqDepth <- mean(DGE_RawCount$samples$lib.size) * 1e-6 # for threshold of the filter GeneExpress
   Med_SeqDepth <- median(DGE_RawCount$samples$lib.size) * 1e-6 # for offset added while calculating the cpm.
@@ -682,7 +682,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   Log_FilterCutoff=log2(10/Med_SeqDepth +2/Mean_SeqDepth)
     # finding lowly expressed genes using filterByExpr from the edgeR library. This will check count value among a given groups of sample. Here we choose the "group_condition" as factor. this return a one column binary table with gene name as index. The filter a consider a threshold at 10 reads relative to the median library size  (10 reads/MedianLibSize per million) + the CPM offset (2)
   
-  Expressed_Genes <- filterByExpr(DGE_RawCount, group=DGE_RawCount$samples$group_Cond)
+  Expressed_Genes <- edgeR::filterByExpr(DGE_RawCount, group=DGE_RawCount$samples$group_Cond)
     # Update the DGE object by removing lowly expressed genes from the table. Correct also the lib.size variable
   DGE_Filtered_RawCount=DGE_RawCount[Expressed_Genes,,keep.lib.sizes=F]
   # Add to the Output
@@ -696,13 +696,13 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   DGE3_cp=DGE_Filtered_RawCount
   DGE3_cp$counts[,1]=ceiling(DGE3_cp$counts[,1]*0.05)
   DGE3_cp$counts[,2]=DGE3_cp$counts[,2]*5
-  lcpm_DGE3_cp=cpm(DGE3_cp, log = T, prior.count = 2)
+  lcpm_DGE3_cp=edgeR::cpm(DGE3_cp, log = T, prior.count = 2)
   # normalise the DGE3_cp
-  DGE3_cp=calcNormFactors(DGE3_cp,method="TMM")
+  DGE3_cp=edgeR::calcNormFactors(DGE3_cp,method="TMM")
   # Correct the real Data
-  DGE3_TMM_FiltCount=calcNormFactors(DGE_Filtered_RawCount, method = "TMM") 
+  DGE3_TMM_FiltCount=edgeR::calcNormFactors(DGE_Filtered_RawCount, method = "TMM") 
   # Calculate the logCPM values or the corrected data
-  LCP_DGE3_TMM_FilterCount=cpm(DGE3_TMM_FiltCount, log = T, prior.count = 2)
+  LCP_DGE3_TMM_FilterCount=edgeR::cpm(DGE3_TMM_FiltCount, log = T, prior.count = 2)
   Output["TMM_correction"]=DGE3_TMM_FiltCount
   
                           # Voom transform of counts  Removing heteroscedascity from count data
@@ -717,7 +717,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   # perform the linear fit and plot the resulting correction
   vfit <- limma::lmFit(Voom_DGE3, ModelCond)
   # vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
-  efit <- eBayes(vfit)
+  efit <- limma::eBayes(vfit)
   Output["Voom_Raw"]=Voom_DGE3
   
                                 # Adjusting for the Batch effects by Unsupervised clustering of samples. 
@@ -731,10 +731,10 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   #The number of factors can also be estimated using the num.sv function
   # calculate the number of confounding factor ()
   # This step estimate the number of confounding factors then used to find the surrogate variables. this is the unsupervised part
-  Nb_LatentFactors = num.sv(Voom_DGE3$E,mod_SurrogateVar)# we apply the sva function to estimate the number of latent variables using
+  # Nb_LatentFactors = sva::num.sv(Voom_DGE3$E,mod_SurrogateVar)# we apply the sva function to estimate the number of latent variables using
   # print(paste0("number of latent variable = ", as.character(Nb_LatentFactors)))
   # Surrogate_Var=sva(Voom_DGE3$E,mod_SurrogateVar,mod0, n.sv = Nb_LatentFactors)
-  Surrogate_Var=sva(Voom_DGE3$E,mod_SurrogateVar,mod0)# if not specified n.sv can be added manually 
+  Surrogate_Var=sva::sva(Voom_DGE3$E,mod_SurrogateVar,mod0)# if not specified n.sv can be added manually 
   # print(c("number of Surrogate variable = ", as.character(Surrogate_Var)))
   # Cleanup the data
   VoomTrans_ExpressVal = cleaningP(Voom_DGE3$E, mod_SurrogateVar, Surrogate_Var)
@@ -759,7 +759,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
     DT_LOG2CPM=as.data.table(Log2CPM, keep.rownames = T)
     Melt_DT_LPG2CPM=melt(DT_LOG2CPM)
     Melt_DT_LPG2CPM$Corr=rep("Raw Data", nrow(Melt_DT_LPG2CPM))
-    DT_FILT_LOG2CPM=as.data.table(cpm(DGE_Filtered_RawCount, log = T, prior.count = 2), keep.rownames=T)
+    DT_FILT_LOG2CPM=as.data.table(edgeR::cpm(DGE_Filtered_RawCount, log = T, prior.count = 2), keep.rownames=T)
     Melt_DT_FILT_LPG2CPM=melt(DT_FILT_LOG2CPM)
     Melt_DT_FILT_LPG2CPM$Corr=rep("Filtered Data", nrow(Melt_DT_FILT_LPG2CPM))
     Binded=rbind(Melt_DT_LPG2CPM,Melt_DT_FILT_LPG2CPM)
@@ -824,7 +824,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
     SortedNamesIdx=sort.int(DGE3_cp$samples$group_Cond, index.return = T)
     Raw=as.data.table(lcpm_DGE3_cp[,SortedNamesIdx$ix])
     Raw$Corr="Raw data"
-    TMM=as.data.table(cpm(DGE3_cp,log = T, prior.count = 2)[,SortedNamesIdx$ix])
+    TMM=as.data.table(edgeR::cpm(DGE3_cp,log = T, prior.count = 2)[,SortedNamesIdx$ix])
     TMM$Corr="TMM"
     Binded=rbind(Raw,TMM)
     Melt_Binded=melt(as.data.table(Binded))
@@ -977,7 +977,7 @@ Genes_Diff_Expressed =function(NormData,Factor4Design,Group4InteractivePlot=Fact
       # The Defaut method is ""
   # Plot = whether to plot or not the result and eventually save the figure
   # setup the Output variable
-  Output=hash()
+  Output=list()
   #                       Differential Gene expression
   #Setting up design matrix. This will define which samples are replicates.
   Mat_Model_Cond=model.matrix(~0+Factor4Design)
@@ -1014,7 +1014,7 @@ Genes_Diff_Expressed =function(NormData,Factor4Design,Group4InteractivePlot=Fact
   ContrastMap=ContrastMap[colnames(LMFit_Data$coefficients),]
   Contrast_LMFit_Data <- contrasts.fit(LMFit_Data, contrasts=ContrastMap )
   
-  efit_Data <- eBayes(Contrast_LMFit_Data) #extract the relevant statistics
+  efit_Data <- limma::eBayes(Contrast_LMFit_Data) #extract the relevant statistics
   # efit_Data$genes=efit_Data$genes[,c("Genename", "GENE_NAME","ORF19_ID","ASSEMBLY22_ID", "EntrezID", "Note")]
   tfit=treat(Contrast_LMFit_Data)
   # get the differentially expressed genes
@@ -1025,7 +1025,7 @@ Genes_Diff_Expressed =function(NormData,Factor4Design,Group4InteractivePlot=Fact
   Find_DiffReg_genes=as.data.frame(Find_DiffReg_genes)
   
   Coefs=colnames(efit_Data$coefficients)
-  DEgenes=hash()
+  DEgenes=list()
   
   Ref_Meta=Annotation[match(RefCond,Annotation$group_Cond),]
   Test_Meta=Annotation[match(CompareCond,Annotation$group_Cond),]
@@ -1073,7 +1073,7 @@ Genes_Diff_Expressed =function(NormData,Factor4Design,Group4InteractivePlot=Fact
       }
     
    }
-  doParallel::stopImplicitCluster()
+  # doParallel::stopImplicitCluster()
   Output=DEgenes
  
                              # PLOT SECTION
@@ -1305,8 +1305,8 @@ MergeDEResults=function(HashObj,VarName="Gene", Method="c"){
 }
 
 MergeDEResSpecifiComp=function(DGE_Res,Condition,RefConditions, CommonVar="Gene", OutputFolderPath=""){
-  Output=hash()
-  Renamed_selected_cond=hash()
+  Output=list()
+  Renamed_selected_cond=list()
   Metadata=DGE_Res$MetaData
   Metadata=sapply(Metadata, as.character)
   Metadata=as.data.frame(Metadata)
@@ -1340,7 +1340,7 @@ return(Output)
 
 BuildDEComparaison=function(Meta, UniqueVar, ReferencesVal){
   Output=data.frame()
-  Renamed_selected_cond=hash()
+  Renamed_selected_cond=list()
   
   Metadata=sapply(Meta, as.character)
   Metadata=as.data.frame(Metadata)

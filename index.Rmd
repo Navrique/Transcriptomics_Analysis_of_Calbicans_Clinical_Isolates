@@ -2,6 +2,59 @@
 title: "Transcriptomics analysis of pairs of *Candida albicans* clinical isolates"
 ---
 ```{r}
-# install.packages("flexdashboard","data.table"
-# )
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggsignif)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(RColorBrewer)
+library(org.Hs.eg.db)
+library(crosstalk)
+InstallPackages=function(x){
+  if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+  for( i in x ){
+    #  require returns TRUE invisibly if it was able to load package
+    if( ! require( i , character.only = TRUE ) ){
+      # check the package is a bioconductor package and install it if required
+      if (length(BiocManager::available(paste0("^",i,"$")))>0){
+        BiocManager::install(i)
+      }
+      else{
+        #  If package was not able to be loaded then re-install
+        install.packages( i , dependencies = TRUE )
+      }
+      #  Load package after installing
+      require( i , character.only = TRUE )
+    }
+  }
+}
+Pkg_list=c("devtools",
+           "flexdashboard",
+           "stringr",
+           "data.table",
+           "knitr",
+           "kableExtra",
+           "rmarkdown",
+           "crosstalk",
+           "RColorBrewer",
+           "gridExtra",
+           "grid",
+           "ggplot2",
+           "plotly",
+           "R.utils",
+           "STRINGdb",
+           "crosstalk",
+           "tidyr",
+           "limma",
+           "edgeR",
+           "sva",
+           "DT"
+)
+InstallPackages(Pkg_list)
+
+# GitHub packages
+devtools::install_github("rstudio/crosstalk")
+remotes::install_github("vqv/ggbiplot")
 ```

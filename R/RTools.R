@@ -62,7 +62,7 @@ remotes::install_github("vqv/ggbiplot")
 
 # library(optimbase)
 library(data.table)
-library(ggplot2)
+# library(ggplot2)
 library(data.table)
 library(stringi)
 library(stringr)
@@ -77,45 +77,45 @@ rep.col<-function(x,n){
 
 # Theme of ggplot single graph
 
-mynamestheme <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (15),hjust = 0.5 ), 
-                      legend.title = element_text( family = "Helvetica"), 
-                      legend.text = element_text(family = "Helvetica"), 
-                      axis.title = element_text(family = "Helvetica", size = (15)),
-                      axis.text = element_text(family = "Helvetica", size = (15), color = "black"),
-                      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"))
-mynamesthemeSmall <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (12),hjust = 0.5 ), 
-                      legend.title = element_text( family = "Helvetica"), 
-                      legend.text = element_text(family = "Helvetica"), 
-                      axis.title = element_text(family = "Helvetica", size = (10)),
-                      axis.text = element_text(family = "Helvetica", size = (10), color = "black"),
-                      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"))
+mynamestheme <- ggplot2::theme(plot.title = ggplot2::element_text(family = "Helvetica", face = "bold", size = (15),hjust = 0.5 ), 
+                      legend.title = ggplot2::element_text( family = "Helvetica"), 
+                      legend.text = ggplot2::element_text(family = "Helvetica"), 
+                      axis.title = ggplot2::element_text(family = "Helvetica", size = (15)),
+                      axis.text = ggplot2::element_text(family = "Helvetica", size = (15), color = "black"),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"))
+mynamesthemeSmall <- ggplot2::theme(plot.title = ggplot2::element_text(family = "Helvetica", face = "bold", size = (12),hjust = 0.5 ), 
+                      legend.title = ggplot2::element_text( family = "Helvetica"), 
+                      legend.text = ggplot2::element_text(family = "Helvetica"), 
+                      axis.title = ggplot2::element_text(family = "Helvetica", size = (10)),
+                      axis.text = ggplot2::element_text(family = "Helvetica", size = (10), color = "black"),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"))
 
-ThemeZim <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (18),hjust = 0.5 ), 
-                      legend.title = element_text( family = "Helvetica"), 
-                      legend.text = element_text(family = "Helvetica"), 
-                      axis.title = element_text(family = "Helvetica", size = (18)),
-                      axis.text = element_text(family = "Helvetica", size = (18), color = "black"),
-                      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"))
+ThemeZim <- ggplot2::theme(plot.title = ggplot2::element_text(family = "Helvetica", face = "bold", size = (18),hjust = 0.5 ), 
+                      legend.title = ggplot2::element_text( family = "Helvetica"), 
+                      legend.text = ggplot2::element_text(family = "Helvetica"), 
+                      axis.title = ggplot2::element_text(family = "Helvetica", size = (18)),
+                      axis.text = ggplot2::element_text(family = "Helvetica", size = (18), color = "black"),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"))
 
 # Theme of ggplot graph pdf
-PDFtheme <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (10),hjust = 0.5 ), 
-                      legend.title = element_text( family = "Helvetica"), 
-                      legend.text = element_text(family = "Helvetica"), 
-                      axis.title = element_text(family = "Helvetica", size = (10)),
-                      axis.text = element_text(family = "Helvetica", size = (10), color = "black"),
-                      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"))
+PDFtheme <- ggplot2::theme(plot.title = ggplot2::element_text(family = "Helvetica", face = "bold", size = (10),hjust = 0.5 ), 
+                      legend.title = ggplot2::element_text( family = "Helvetica"), 
+                      legend.text = ggplot2::element_text(family = "Helvetica"), 
+                      axis.title = ggplot2::element_text(family = "Helvetica", size = (10)),
+                      axis.text = ggplot2::element_text(family = "Helvetica", size = (10), color = "black"),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"))
 
-ThemeGO <- theme(plot.title = element_text(family = "Helvetica", face = "bold", size = (15),hjust = 0.5 ), 
-                      legend.title = element_text( family = "Helvetica"), 
-                      legend.text = element_text(family = "Helvetica"), 
-                      axis.title = element_text(family = "Helvetica", size = (15)),
-                      axis.text = element_text(family = "Helvetica", size = (15), color = "black"),
-                      panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"))
+ThemeGO <- ggplot2::theme(plot.title = ggplot2::element_text(family = "Helvetica", face = "bold", size = (15),hjust = 0.5 ), 
+                      legend.title = ggplot2::element_text( family = "Helvetica"), 
+                      legend.text = ggplot2::element_text(family = "Helvetica"), 
+                      axis.title = ggplot2::element_text(family = "Helvetica", size = (15)),
+                      axis.text = ggplot2::element_text(family = "Helvetica", size = (15), color = "black"),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"))
 
 
 # Moving average 

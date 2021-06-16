@@ -2,19 +2,21 @@
 
 # The topGO package is designed to facilitate semi-automated enrichment analysis for Gene Ontology (GO) terms.   The  process  consists  of  input  of  normalised  gene  expression  measurements,  gene-wise  correlationor differential expression analysis, enrichment analysis of GO terms, interpretation and visualisation of the results. One of the main advantages of topGO is the unified gene set testing framework it offers.  Besides providing an  easy  to  use  set  of  functions  for  performing  GO  enrichment  analysis,  it  also  enables  the  user  to  easily implement  new  statistical  tests  or  new  algorithms  that  deal  with  the  GO  graph  structure.   This  unified framework also facilitates the comparison between different GO enrichment methodologies. There are a number of test statistics and algorithms dealing with the GO graph structured ready to use in topGO. The elim and weight algorithms were introduced in Alexa et al. (2006).  The default algorithm used by the topGO package is a mixture between the elim and theweightalgorithms and it will be referred asweight01.TheparentChildalgorithm was introduced by Grossmann et al. (2007).We assume the user has a good understanding of GO, see Consortium (2001), and is familiar with gene setenrichment tests.  Also this document requires basic knowledge of R language.The  next  section  presents  a  quick  tour  intotopGOand  is  thought  to  be  independent  of  the  rest  of  thismanuscript.  The remaining sections provide details on the functions used in the sample section as well as showing more advance functionality implemented in the topGO package. 
 
-library(topGO)
-library(R.utils)
-# library(mgsa)
-# library(ViSEAGO)
-library(STRINGdb)
-library(clusterProfiler)
-library(enrichplot)
-library(ggplot2)
+# library(topGO)
+# library(R.utils)
+# # library(mgsa)
+# # library(ViSEAGO)
+# library(STRINGdb)
+# library(clusterProfiler)
+# library(enrichplot)
+# library(ggplot2)
+
 # Choose the destination Folder for download and db build 
 
 Dest="/media/edurandau/DATA/Eric_Durandau/Sanglard/Data/Sequencing/candida_ref"
 
 BuildCandidaGOdb=function(SaveDir=Dest){
+  library(stringr)
   # Gene universe file http://www.candidagenome.org/download/go/gene_association.cgd.gz
   Path2GOannotationFile="http://www.candidagenome.org/download/go/gene_association.cgd.gz"
   
@@ -186,11 +188,11 @@ BuildCaGOdb_CP=function(ChromosomalFeatureFile="Data/20200528-C_albicans_SC5314_
 # define the taxon
 Taxon=5476
 # Load the stringdb object
-string_db_Ca <- STRINGdb$new( version="11", species=Taxon,score_threshold=200, input_directory="../Data/STRINGdb")
+string_db_Ca <- STRINGdb::STRINGdb$new( version="11", species=Taxon,score_threshold=200, input_directory="../Data/STRINGdb")
 
-string_db_Cg <- STRINGdb$new( version="11", species=5478,score_threshold=200, input_directory="../Data/STRINGdb")
+string_db_Cg <- STRINGdb::STRINGdb$new( version="11", species=5478,score_threshold=200, input_directory="../Data/STRINGdb")
 
-string_db_Hs <- STRINGdb$new( version="11", species=9606,score_threshold=200, input_directory="../Data/STRINGdb")
+string_db_Hs <- STRINGdb::STRINGdb$new( version="11", species=9606,score_threshold=200, input_directory="../Data/STRINGdb")
 
 PlotSTRINGdbNetwork=function(Table,Cluster="all", VarCluster="HC_Clusters", StringIDVar="STRING_id", AliasVar="Gene",MaxConnection=150, string_db=string_db_Ca, Plot=T){
   RemoveRedundantConnexion=function(Table){
