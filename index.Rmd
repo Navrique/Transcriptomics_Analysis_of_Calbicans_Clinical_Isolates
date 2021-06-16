@@ -2,5 +2,6 @@
 title: "Transcriptomics analysis of pairs of *Candida albicans* clinical isolates"
 ---
 ```{r}
-# install.packages("flexdashboard")
+# install.packages("flexdashboard","data.table"
+# )
 ```

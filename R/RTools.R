@@ -57,7 +57,7 @@ Packagelist=c("optimbase",
               "org.Hs.eg.db",
               "M3C",
               "networkD3")
-InstallPackages(Packagelist)
+# InstallPackages(Packagelist)
 remotes::install_github("vqv/ggbiplot")
 
 # library(optimbase)
