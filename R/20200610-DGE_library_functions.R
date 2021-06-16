@@ -1,13 +1,13 @@
 # The aim of this file is to define a library of functions that can be used to perform a differential gene expression analysis
-# library(limma)
-# library(edgeR)
+library(limma)
+library(edgeR)
 # library(stringr)
 # library(RColorBrewer)
-# library(ggplot2)
-# library(sva)
-# library(pheatmap)
+library(ggplot2)
+library(sva)
+library(pheatmap)
 # library(hash)
-# library(tidyr)
+library(tidyr)
 # library(grDevices)
 # library(Glimma)
 # # library(foreach)
@@ -686,7 +686,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
     # Update the DGE object by removing lowly expressed genes from the table. Correct also the lib.size variable
   DGE_Filtered_RawCount=DGE_RawCount[Expressed_Genes,,keep.lib.sizes=F]
   # Add to the Output
-  Output["Filter_Genes"]=DGE_Filtered_RawCount
+  Output[["Filter_Genes"]]=DGE_Filtered_RawCount
   
   
   #                   Data normalisation : TMM
@@ -703,7 +703,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   DGE3_TMM_FiltCount=edgeR::calcNormFactors(DGE_Filtered_RawCount, method = "TMM") 
   # Calculate the logCPM values or the corrected data
   LCP_DGE3_TMM_FilterCount=edgeR::cpm(DGE3_TMM_FiltCount, log = T, prior.count = 2)
-  Output["TMM_correction"]=DGE3_TMM_FiltCount
+  Output[["TMM_correction"]]=DGE3_TMM_FiltCount
   
                           # Voom transform of counts  Removing heteroscedascity from count data
   
@@ -718,7 +718,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   vfit <- limma::lmFit(Voom_DGE3, ModelCond)
   # vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
   efit <- limma::eBayes(vfit)
-  Output["Voom_Raw"]=Voom_DGE3
+  Output[["Voom_Raw"]]=Voom_DGE3
   
                                 # Adjusting for the Batch effects by Unsupervised clustering of samples. 
 # This step might not be essential since all samples are from the same batch. This can be interesting if we do have sequencing files generated from different runs or lanes. a GOOD example would be 
@@ -731,18 +731,18 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
   #The number of factors can also be estimated using the num.sv function
   # calculate the number of confounding factor ()
   # This step estimate the number of confounding factors then used to find the surrogate variables. this is the unsupervised part
-  # Nb_LatentFactors = sva::num.sv(Voom_DGE3$E,mod_SurrogateVar)# we apply the sva function to estimate the number of latent variables using
+  Nb_LatentFactors = sva::num.sv(Voom_DGE3$E,mod_SurrogateVar)# we apply the sva function to estimate the number of latent variables using
   # print(paste0("number of latent variable = ", as.character(Nb_LatentFactors)))
   # Surrogate_Var=sva(Voom_DGE3$E,mod_SurrogateVar,mod0, n.sv = Nb_LatentFactors)
-  Surrogate_Var=sva::sva(Voom_DGE3$E,mod_SurrogateVar,mod0)# if not specified n.sv can be added manually 
+  Surrogate_Var=sva::sva(Voom_DGE3$E,mod_SurrogateVar,mod0, n.sv = Nb_LatentFactors)# if not specified n.sv can be added manually 
   # print(c("number of Surrogate variable = ", as.character(Surrogate_Var)))
   # Cleanup the data
   VoomTrans_ExpressVal = cleaningP(Voom_DGE3$E, mod_SurrogateVar, Surrogate_Var)
   #Replacing the counts from original voom object with batch corrected expression values
   Voom_DGE3_cp=Voom_DGE3
   Voom_DGE3_cp$E=VoomTrans_ExpressVal
-  Output["Norm_Data"]=Voom_DGE3_cp
-  Output["Expressed_Genes"]=DGE_RawCount$counts>Log_FilterCutoff
+  Output[["Norm_Data"]]=Voom_DGE3_cp
+  Output[["Expressed_Genes"]]=DGE_RawCount$counts>Log_FilterCutoff
   
 #                                             !!!!!!  PLOT SECTION
   if (is.character(Plots) | isTRUE(Plots)){
@@ -883,7 +883,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
       Tbl=cbind(data.frame(Dim1=x$x, Dim2=x$y),
                 Metadata)
     })
-    PCA=bind_rows(Val)
+    PCA=dplyr::bind_rows(Val)
     PCA$Corrected="With batch effects"
     PCA$Corrected[duplicated(PCA$Sample)]="Batch effect corrected"
     
@@ -930,7 +930,7 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
     rownames(Annotation)=rownames(CorCondWiseRaw)
     colnames(Annotation)=c("Sample_groups", AdditionalFactor)
     # par(mfrow=c(1,2))
-    P7=pheatmap(CorCondWiseRaw, annotation =Annotation ,treeheight_row=20, treeheight_col = 20,  main= "Not corrected")[[4]]
+    P7=pheatmap::pheatmap(CorCondWiseRaw, annotation =Annotation ,treeheight_row=20, treeheight_col = 20,  main= "Not corrected")[[4]]
     if (!is.logical(Plots)){
       dev.off()
     }
@@ -938,12 +938,12 @@ ReadCountNormalisation=function(ReadCounts, Metadata, Factor,  Genes,AdditionalF
       svg(filename = file.path(PlotExportPath,"BatchEffectRmv_HeatMap.svg"),width = 20, height = 20, pointsize = 10)
     }
     
-    P8=pheatmap(CorCondWiseCorr, annotation =Annotation,treeheight_row=20, treeheight_col = 20,main= "Corrected" )[[4]]
+    P8=pheatmap::pheatmap(CorCondWiseCorr, annotation =Annotation,treeheight_row=20, treeheight_col = 20,main= "Corrected" )[[4]]
     if (!is.logical(Plots)){
       dev.off()
     }
     # P9=recordPlot(grid.arrange(arrangeGrob(grobs= list(P7,P8),ncol=2)))
-    Output["GGplot"]=list("Low_Expression_Filtering"=P11,
+    Output[["GGplot"]]=list("Low_Expression_Filtering"=P11,
                           "Library_size"=P2,
                           "TMM_Correction"=P3,
                           "Voom_transform"=P4,

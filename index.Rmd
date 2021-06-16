@@ -2,16 +2,7 @@
 title: "Transcriptomics analysis of pairs of *Candida albicans* clinical isolates"
 ---
 ```{r}
-library(data.table)
-library(knitr)
-library(kableExtra)
-library(ggsignif)
-library(ggpubr)
-library(grid)
-library(gridExtra)
-library(RColorBrewer)
-library(org.Hs.eg.db)
-library(crosstalk)
+
 InstallPackages=function(x){
   if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
   for( i in x ){
@@ -50,11 +41,28 @@ Pkg_list=c("devtools",
            "limma",
            "edgeR",
            "sva",
-           "DT"
+           "DT",
+           "pheatmap",
+           "org.Hs.eg.db",
+           "M3C",
+           "ggpubr",
+           "clusterProfiler",
+           "ggnewscale"
 )
 InstallPackages(Pkg_list)
 
 # GitHub packages
 devtools::install_github("rstudio/crosstalk")
 remotes::install_github("vqv/ggbiplot")
+
+# library(data.table)
+# library(knitr)
+# library(kableExtra)
+# # library(ggsignif)
+# library(ggpubr)
+# library(grid)
+# library(gridExtra)
+# library(RColorBrewer)
+# library(org.Hs.eg.db)
+# library(crosstalk)
 ```

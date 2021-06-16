@@ -21,7 +21,6 @@ df_print: kable
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = FALSE)
 options(knitr.duplicate.label = "allow")
 # Path and file names
@@ -36,7 +35,7 @@ source(file.path("R","GO.R"))
 library(data.table)
 library(knitr)
 library(kableExtra)
-library(ggsignif)
+library(plotly)
 library(ggpubr)
 library(grid)
 library(gridExtra)
@@ -47,11 +46,7 @@ library(crosstalk)
 Data_dir=file.path("Data")
 
 if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
-  BuildCaGOdb_CP(OuputDir = Data_dir,
-                 ChromosomalFeatureFile="Data/20200528-C_albicans_SC5314_A22_current_chromosomal_feature.tab",
-                     GeneAssociationFile="Data/20201123-CGD_gene_association.cgd",
-                     NCBIGeneList="Data/20201107-NCBI_GeneList.tab"
-                )
+  # BuildCaGOdb_CP(OuputDir = Data_dir)
   install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
 }
 ```

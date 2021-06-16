@@ -21,7 +21,6 @@ df_print: kable
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = FALSE)
 options(knitr.duplicate.label = "allow")
 # Path and file names
@@ -36,7 +35,7 @@ source(file.path("R","GO.R"))
 library(data.table)
 library(knitr)
 library(kableExtra)
-library(ggsignif)
+library(plotly)
 library(ggpubr)
 library(grid)
 library(gridExtra)
@@ -44,10 +43,10 @@ library(RColorBrewer)
 library(org.Hs.eg.db)
 library(crosstalk)
 # Check Ca GO db is install 
-Data_dir=file.path( "Data")
+Data_dir=file.path("Data")
 
 if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
-  BuildCaGOdb_CP(OuputDir = Data_dir)
+  # BuildCaGOdb_CP(OuputDir = Data_dir)
   install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
 }
 ```

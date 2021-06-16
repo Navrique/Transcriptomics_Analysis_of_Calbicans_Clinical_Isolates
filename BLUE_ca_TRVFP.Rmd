@@ -19,7 +19,6 @@ df_print: kable
 ---
 
 ```{r setup, include=FALSE}
-
 knitr::opts_chunk$set(echo = FALSE)
 options(knitr.duplicate.label = "allow")
 # Path and file names
@@ -34,14 +33,13 @@ source(file.path("R","GO.R"))
 library(data.table)
 library(knitr)
 library(kableExtra)
-# library(ggsignif)
-# library(ggpubr)
-# library(grid)
-# library(gridExtra)
-# library(RColorBrewer)
-# library(org.Hs.eg.db)
+library(plotly)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(RColorBrewer)
+library(org.Hs.eg.db)
 library(crosstalk)
-library(stringr)
 # Check Ca GO db is install 
 Data_dir=file.path("Data")
 

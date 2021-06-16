@@ -34,7 +34,7 @@ source(file.path("R","GO.R"))
 library(data.table)
 library(knitr)
 library(kableExtra)
-library(ggsignif)
+library(plotly)
 library(ggpubr)
 library(grid)
 library(gridExtra)
@@ -45,7 +45,7 @@ library(crosstalk)
 Data_dir=file.path("Data")
 
 if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
-  BuildCaGOdb_CP(OuputDir = Data_dir)
+  # BuildCaGOdb_CP(OuputDir = Data_dir)
   install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
 }
 ```

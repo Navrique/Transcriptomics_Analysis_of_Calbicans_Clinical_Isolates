@@ -529,18 +529,18 @@ GOE=function(GeneList, Universe, OrgDb, pAdjustMethod = "BH", pvalueCutoffE  = 0
       # if (nrow(ego@result)<3){
       #   sego=ego
       # }
-      x=tryCatch(pairwise_termsim(ego, method = "Wang", semData = d1, showCategory = 25), error = function(e){e})
+      x=tryCatch(enrichplot::pairwise_termsim(ego, method = "Wang", semData = d1, showCategory = 25), error = function(e){e})
       IsError=class(x)[[1]]!="enrichResult"
       
       if (IsError | length(ego$ID)<3){
         
       }else {
-        sego <- pairwise_termsim(ego, method = "Wang", semData = d1, showCategory = 25)
+        sego <- enrichplot::pairwise_termsim(ego, method = "Wang", semData = d1, showCategory = 25)
         # sego@result$Description=str_wrap(sego@result$Description,width = 40)
         
         
         
-        P4=emapplot(sego,showCategory = 10,
+        P4=clusterProfiler::emapplot(sego,showCategory = 10,
                     layout="kk", 
                     label_format = 5,
                     cex_label_category = 0.5,
@@ -550,7 +550,7 @@ GOE=function(GeneList, Universe, OrgDb, pAdjustMethod = "BH", pvalueCutoffE  = 0
                     node_label="group")
         
         sego@result$Description=str_wrap(sego@result$Description,width = 30)
-        sego2=simplify(sego)
+        sego2=clusterProfiler::simplify(sego)
         
         Title=i
         # PlotList[[paste0("Clust_", as.character(ClusterNb))]][[paste0("Plot_P4_",i)]]= P4
@@ -563,9 +563,9 @@ GOE=function(GeneList, Universe, OrgDb, pAdjustMethod = "BH", pvalueCutoffE  = 0
         #            color = "p.adjust", font.size = 7, title = Title)
         
         # dotplot(ego2,color = "p.adjust", showCategory=40,title = paste("Cluster", ClusterNb))
-        P2=goplot(sego,color = "p.adjust", showCategory=5 ,title = paste("Cluster", ClusterNb), title=i)
+        P2=clusterProfiler::goplot(sego,color = "p.adjust", showCategory=5 ,title = paste("Cluster", ClusterNb), title=i)
         # cnetplot(ego2, categorySize="p.adjust", showCategory = 12)
-        P3=cnetplot(
+        P3=clusterProfiler::cnetplot(
           sego2,
           showCategory = 10,
           foldChange = GeneList,
