@@ -1,0 +1,130 @@
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+### Filtering
+
+``` {r P1 GO list, fig.height=18, fig.width=5}
+ListTableGO=sapply(as.character(ClustersID), function(x){
+  if (length(PlotList[[x]])<2){
+    TableGO=data.table()
+  }else{
+    if (length(PlotList[[x]])<2){
+      TableGO=data.table()
+    }
+    else{
+      TableGO=PlotList[[x]][["Summary"]]
+    }
+  }
+},USE.NAMES = T, simplify = F)
+
+TableGO=as.data.table(rbindlist(ListTableGO,idcol = "Cluster"))
+
+TableDotplot=TableGO[, .(ID, Cluster, Description, GeneRatio, p.adjust, Count, GO_Class)][, GeneRatio:=sapply(GeneRatio, function(x) eval(parse(text=x)))][order(Count),]
+TableDotplot=data.frame(TableDotplot,stringsAsFactors = F)
+
+SharedGroup=paste(c(NameSharedData,"GO"), collapse = "_")
+# SharedDT=SharedData$new(Exp, key = ~Gene)
+SharedGO_Plot=SharedData$new(TableDotplot, key = ~ID, group=SharedGroup)
+SharedGO_Filter=SharedData$new(TableDotplot[, c("ID", "Cluster","GO_Class", "GeneRatio", "p.adjust" )], key = ~ID, group=SharedGroup)
+
+# bscols(Filters,plotly::subplot(P,p.legend, widths=c(0.9,0.05),titleX = T, titleY=T))
+
+gP=ggplot(SharedGO_Plot, aes(x=GeneRatio, y=ID, color=p.adjust, size=Count, label=Description))+
+  geom_count()+
+    scale_y_discrete(limits=TableDotplot$ID[order(TableDotplot$GeneRatio)])
+
+
+
+filter_checkbox(paste(c(SharedGroup, "Cluster"), collapse  = "_"), "Cluster", SharedGO_Filter, ~Cluster, inline = TRUE)
+filter_checkbox(paste(c(SharedGroup, "GO_Class"), collapse  = "_"), "GO class", SharedGO_Filter, ~GO_Class, inline = TRUE)
+filter_slider(paste(c(SharedGroup, "Gene_Ratio"), collapse  = "_"), "Gene_Ratio",SharedGO_Filter, ~GeneRatio, width = "100%",animate = F, round = 4)
+filter_slider(paste(c(SharedGroup, "p_adjust"), collapse  = "_"), "p value",SharedGO_Filter, ~p.adjust, width = "100%",animate = F, round = 3)
+
+# ggplotly(gP, dynamicTicks = "y")
+# bscols(Filters[1:2], Filters[3:4])
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### GO enrichment Dot plots
+
+```{r plot}
+
+ggPLY=ggplotly(gP, dynamicTicks = T)
+
+ggPLY
+
+```
+
+Column {data-width=700}
+-----------------------------------------------------------------------
+
+### Summary GO 2 gene
+
+```{r GO summary }
+ListTableGO=sapply(as.character(ClustersID), function(x){
+  if (length(PlotList[[x]])<2){
+    TableGO=data.table()
+  }else{
+    if (length(PlotList[[x]])<2){
+      TableGO=data.table()
+    }
+    else{
+      TableGO=PlotList[[x]][["Summary"]]
+    }
+  }
+},USE.NAMES = T, simplify = F)
+
+TableGO=as.data.table(rbindlist(ListTableGO,idcol = "Cluster"))
+TableGO$pvalue=round(TableGO$pvalue,5)
+TableGO$p.adjust=round(TableGO$p.adjust,5)
+TableGO$qvalue=round(TableGO$qvalue,5)
+TableGO$Cluster=as.factor(TableGO$Cluster)
+TableGO$GO_Class=as.factor(TableGO$GO_Class)
+TableGO$geneID=str_wrap(TableGO$geneID, 30)
+SharedGO_Data=SharedData$new(TableGO, key = ~ID, group=SharedGroup)
+# DT::datatable(TableGO, filter = "top",extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+#   headerCallback = DT::JS(
+#     "function(thead) {",
+#     "  $(thead).css('font-size', '0.7em');",
+#     "}"
+#   )
+# ), rownames = F)%>%
+#   DT::formatStyle(columns = colnames(TableGO), fontSize = '75%')
+DT::datatable(SharedGO_Data,
+                     width="50%",
+                     height=400,
+              extensions="Buttons",
+              style="bootstrap",
+              class="compact",
+              options=list(dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),deferRender=TRUE, scrollX = T, scrollY=300),
+              rownames = F)
+```
+
+<!-- ```{r Graph} -->
+<!-- library(networkD3) -->
+
+<!-- GO2Gene=TableGO[,c(Gene=strsplit(geneID,"/")), by="ID"] -->
+<!-- GONetworkTable=TableGO[GO2Gene,on=.(ID=ID)][, .(ID, Description,Cluster, p.adjust, Count, GO_Class, Gene)] -->
+
+<!-- NodeGO=unique(GONetworkTable[, .(ID, Description, Cluster, p.adjust, Count, GO_Class)][, Node_Type:="GO"]) -->
+<!-- NodeGene=unique(GONetworkTable[, .(Gene, Description, Cluster, p.adjust, Count, GO_Class)][, `:=`(Description="" ,Node_Type="Gene")]) -->
+<!-- data.table::setnames(NodeGene,"Gene", "ID" ) -->
+<!-- Nodes=rbind(NodeGO,NodeGene) -->
+<!-- BP="BP" -->
+
+<!-- Nodes=Nodes[!duplicated(ID),.SD] -->
+<!-- data.table::setnames(Nodes,"ID", "id") -->
+<!-- data.table::setnames(GO2Gene, c("from", "to")) -->
+<!--     # a nodes data.frame, with id column -->
+<!--     # an edges data.frame, with from and to columns, which make the link with id -->
+
+<!-- visNetwork::visNetwork(Nodes, GO2Gene, height = "700px", width = "100%") %>% -->
+<!--   visNetwork::visIgraphLayout(layout = "layout_with_fr")%>% -->
+<!--   visNetwork::visOptions(selectedBy = "Cluster",  -->
+<!--              highlightNearest = TRUE,  -->
+<!--              nodesIdSelection = TRUE)%>% -->
+<!--   visNetwork::visHierarchicalLayout() -->
+<!-- ``` -->

@@ -1,0 +1,69 @@
+---
+title: "Transcriptomics analysis of pairs of *Candida albicans* clinical isolates"
+output: flexdashboard::flex_dashboard
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+# Path and file names
+# root folder
+RootFolder=dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(RootFolder)
+
+# Load home made function and variable and libraries
+source(file.path("R", "RTools.R"))
+source(file.path("R","20200610-DGE_library_functions.R"))
+source(file.path("R","GO.R"))
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggsignif)
+library(ggpubr)
+library(grid)
+library(gridExtra)
+library(RColorBrewer)
+# Check Ca GO db is install 
+Data_dir="Data"
+
+if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
+  BuildCaGOdb_CP(OuputDir = Data_dir)
+  install.packages(file.path(Data_dir,"org.Calbicans.eg.db"),repos = NULL)
+}
+```
+  
+  *Ca* 3678 V 3621 {data-navmenu="GREEN" .storyboard}
+=====================================
+  
+  
+  *Ca* TR-FP {data-navmenu="GREEN" .storyboard}
+=====================================
+
+
+  *Ca* Time {data-navmenu="GREEN" .storyboard}
+=====================================
+  
+  
+  *Ca* 3678 V 3621 {data-navmenu="BRAUN" .storyboard}
+=====================================
+  
+  
+  *Ca* TR-FP {data-navmenu="BRAUN" .storyboard} 
+=====================================
+```{r,}
+```
+
+  *Ca* Time {data-navmenu="BRAUN" .storyboard}
+=====================================
+  
+  
+  *Ca* 3609 V 3672 {data-navmenu="BLUE" .storyboard}
+=====================================
+  
+  
+  *Ca* TR-FP {data-navmenu="BLUE" .storyboard}
+=====================================
+
+
+  *Ca* Time {data-navmenu="BLUE" .storyboard}
+=====================================

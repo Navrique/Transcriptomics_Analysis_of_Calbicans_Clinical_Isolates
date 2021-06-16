@@ -1,0 +1,348 @@
+
+### Summary statistics
+
+```{r Rm DEG, warning=FALSE, message=FALSE,  fig.height=8, fig.width=13}
+# first create a table mapping the which define condition for which DE analysis has to be performed
+  # recover the metadata from the "RawData"object
+Meta=RawData$MetaData
+  # remove replicate infos define the condition to look at and the corresponding reference Value
+Meta2=Meta[!duplicated(Meta$Conditions),]
+Cond=Meta2[,c("Conditions", DE_Contrast_Cond)]
+
+  # Build the comparaison map using the "BuildDEComparaison" fonction
+Map=BuildDEComparaison(Cond,"Conditions", Ref)
+PMap=Map
+PMap$Name=str_replace(PMap$Name, "_-_", " V ")
+
+# Perform Differencial expression analysis
+DETest=Genes_Diff_Expressed(NormData$Norm_Data,NormData$Norm_Data$targets$group_Cond,Group4InteractivePlot = data.frame(NormData$Norm_Data$targets[SecondaryComparaison]), AdditionalFactor=SecondaryComparaison, RefCond = Map$Ref[Map$Test_Cond==MainComparaison],CompareCond = Map$Test[Map$Test_Cond==MainComparaison],Method = "Paired",lfc_cuttoff = LFC_Cutoff, pvalue_cuttoff = pVal_Cutoff, Plots = F)
+
+
+# Summary statistics
+SumupBay=data.table::as.data.table(DETest$eBayes_Summary)
+test=as.data.frame(dcast(SumupBay, V1~V2))
+colnames(test)=str_replace(colnames(test), "-", " V ")
+test%>%kable("html",caption = paste0("p-value<",as.character(pVal_Cutoff),", log2(FC)>",LFC_Cutoff)) %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 12, full_width = F)
+```
+
+Differential gene expression is performed by calculating the expression of in the `r unique(Meta[!Meta$Conditions%in%PMap$Ref[PMap$Test_Cond==MainComparaison],MainComparaison])` condition relative to the `r unique(Meta[Meta$Conditions%in%PMap$Ref[PMap$Test_Cond==MainComparaison],MainComparaison])` condition. The result is a log2(fold change) matrix indicating the expression of each genes relative to the reference condition. The various step described below use functions from the [limma](http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/01Introduction.html) package.
+
+The first step consist in build a linear model to average read counts from each biological replicates. This operation is performed using the [lmFit()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/lmFit) function. The [makeContrasts()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/makeContrasts) function is then used to build a comparison matrix. Values produce by [lmFit()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/lmFit) and [makeContrasts()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/makeContrasts) are combined in another object using the [contrasts.fit()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/contrasts.fit). This procedure lead to the propagation of the statistics from the linear model. Finally the [ebayes()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/ebayes) function is used to extract from combined the object the relevant statistics of differential expression by empirical Bayes moderation of the standard errors towards a common value. 
+
+To identify genes differentially expressed, the [decideTests()](https://www.rdocumentation.org/packages/limma/versions/3.28.14/topics/decideTests) and the [summary()](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/summary) functions have been used. The first, classify the series of related t-statistics as up, down or not significant, while the second summaries the result of test. Differentially expressed genes has been identified using`r pVal_Cutoff` and `LFC_Cutoff` as cutoff for pvalue and log2(FC) respectively. The tables presented in this slide show the summary of up and down regulated genes using these parameters.
+
+***
+
+### Relative expression of gene and clustering
+
+<div class='left' style='float:left;text-align:center;width:50%;'>
+```{r gene cluster , warning=FALSE, message=FALSE, fig.height=4, fig.width=8}
+
+# Function to build violin plots
+Generate_list_Stat_Compare=function(x){
+  Cond=as.character(unique(DTfuseMetaNLFC[[x]]))
+
+  ListComp=list()
+  Ind=1
+  for (i in 2:length(Cond)){
+    ListComp[[Ind]]=as.character(c(Cond[1], Cond[i]))
+    Ind=Ind+1
+  }
+  D=data.table::copy(DTfuseMetaNLFC[bol,])
+  setnames(D, old = x, new = "Var")
+
+  Formula=as.formula(paste("~", paste(Condlabel[Condlabel!=x], collapse = "+")))
+  P=ggplot(D, aes(x=Var,y=Log.FC,fill=Var)) +
+  geom_violin() +
+  stat_compare_means( comparisons =ListComp , method = "t.test", label = "p.signif") +
+  mynamesthemeSmall+ xlab(x)+ylab("Relative expr. [Log2(FC)]")+facet_wrap(Formula)+
+   theme(legend.position="none",axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  
+
+  return(P)
+}
+
+Decide=decideTests(DETest$eBayes_Stat,adjust.method = "BH",p.value = pVal_Cutoff, lfc = LFC_Cutoff)
+
+Bol=!(rowSums(abs(Decide)))<ncol(Decide)/Factor_Numb_Conditions_gene_diff_expressed
+LFC=as.data.frame(DETest$eBayes_Stat$coefficients[Bol,])
+pVal=as.data.frame(DETest$eBayes_Stat$p.value[Bol,])
+# head(LFC)y§
+PCA=M3C::umap(t(LFC))
+PCA$layout=PCA$data
+
+# ClustNumb=6
+Dist=dist(PCA$layout,method = DistMethod)
+
+Clust=cutree(hclust(Dist, method = AggloMethod),k=ClustNumb)
+
+PCA_Data=as.data.frame(cbind(PCA$layout, Clust))
+PCA_Data$Clust=as.factor(PCA_Data$Clust)
+
+# merge PCA data with Gene info
+PCA=merge(Genes, PCA_Data, by=0)
+PCA$Note=str_wrap(PCA$Note,width=20)
+# Plot The PCA scatter
+P=ggplot(PCA, aes(x=X1, y = X2, color=Clust)) +
+      geom_point(aes(Gene=Gene,orf19=ORF19_ID,Note=Note, Cluster=Clust))+
+      ggtitle(paste(DistMethod,"distance \nwith" , AggloMethod, "agglomeration")) + 
+  mynamesthemeSmall +
+  scale_color_brewer(palette="Paired")+
+  xlab("PC1") + ylab("PC2")
+P=ggplotly(P)
+
+## Build violin plots
+# add cluster information to logFod change table
+LFCnClust=cbind(LFC, Clust)
+
+DTMeta=as.data.table(DETest$MetaData, keep.rownames = T)
+DTLFC=as.data.table(LFCnClust,keep.rownames = T)
+# reshape the LFC table
+DTLFC=melt(DTLFC,id.vars = c("rn", "Clust"))
+
+# fuse table adding condition and time to the LFC matrix
+DTfuseMetaNLFC=DTMeta[DTLFC,on =.(rn=variable)]
+# rename columns
+setnames(DTfuseMetaNLFC, c("Comparaison",colnames(DETest$MetaData), "Gene", "Cluster","Log.FC"))
+
+# Make the violin plot
+Condlabel=colnames(DETest$MetaData)
+bol=rep(T,nrow(DTfuseMetaNLFC))
+Violin_plots=lapply(Condlabel, Generate_list_Stat_Compare)
+# Violin_plots[[length(Violin_plots)+1]]=P
+
+# Build the summary table
+# add moderate t statisitc pvalue to the LFC table
+LFCClustNpVal=cbind(LFCnClust,DETest$eBayes_Stat$F.p.value[Bol])
+colnames(LFCClustNpVal)[ncol(LFCClustNpVal)]="Mod_Fstat_pVal"
+
+# export the cluster table
+# Add gene information to the LFC table
+FullTble=merge(Genes,round(LFCClustNpVal,2),by="row.names")
+
+ggarrange(plotlist=Violin_plots,align = "h")
+P
+# plotly::subplot(Violin_plots, nrows = 2,shareX = F,shareY = T,titleX = T, titleY = T,margin = c(0.1,0.1,0.1,0.1))
+```
+
+</div>
+
+<div class='right' style='float:right;text-align:left;width:30%;'>
+
+```{r plot heatmap, fig.height=8, fig.width=5}
+Index=sort(as.numeric(PCA_Data$Clust), decreasing = T, index.return=T)
+HC_Cluster=as.data.frame(Clust[Index$ix])
+colnames(HC_Cluster)="HC_Cluster"
+
+Annot=droplevels(DETest$MetaData)
+
+Colorlist=brewer.pal(12, "Paired")
+AnnotCol=sapply(colnames(Annot), function(x){
+  RandNum=sample.int(12, length(levels(Annot[[x]])))
+  Color=Colorlist[RandNum]
+  names(Color)=levels(Annot[[x]])
+  Color
+}, simplify = FALSE,USE.NAMES = TRUE)
+AnnotCol[["HC_Cluster"]]=Colorlist[1:length(levels(PCA_Data$Clust))]
+names(AnnotCol[["HC_Cluster"]])=levels(PCA_Data$Clust)
+# P1= pheatmap(as.matrix(LFC[Index$ix,]),cluster_cols = T, cluster_rows = F, main = "Canberra distance \nwith average agglomeration", width = 20, height = 60, annotation_row =HC_Cluster ,annotation_names_row = F ,annotation_col = DETest$MetaData, fontsize_row =2)
+P1=pheatmap(as.matrix(LFC[Index$ix,]),cluster_cols = T, cluster_rows = F, main = paste(DistMethod,"\nwith",AggloMethod,"agglomeration") , width = 20, height = 60, annotation_row =HC_Cluster ,annotation_names_row = F ,annotation_col = Annot, fontsize_row =2, annotation_colors = AnnotCol)
+
+```
+</div>
+
+***
+
+### Summary table
+
+```{r print summary table}
+DT::datatable(FullTble[, c(2,3,7:ncol(FullTble))], filter = "top",extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+  headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )
+), rownames = F)%>%
+  DT::formatStyle(columns = colnames(FullTble[,c(2,3,7:ncol(FullTble))]), fontSize = '75%')
+
+```
+
+### Gene relative expression exploration
+
+```{r Data exploration, warning=F}
+# calculate gene coordinate in the genome 
+Chr=Genes[, c("Chr", "Start", "End")]
+Chr$Gene=rownames(Genes)
+Chr$Chr=str_extract(Chr$Chr, Pattern_X)
+Chr$ChrIdx=as.factor(Chr$Chr)
+levels(Chr$ChrIdx)=1:length(levels(Chr$ChrIdx))
+DT_Chr=as.data.table(Chr)
+DT_Chr[, Max_Chr_Pos:=max(Start), by=ChrIdx]
+DT_Chr_length=DT_Chr[,.(unique(Max_Chr_Pos)), by=ChrIdx][, Chr_Coord:=cumsum(V1)][,Chr_Start:=Chr_Coord-V1]
+DT_Chr=DT_Chr[DT_Chr_length[,.(ChrIdx, Chr_Start)], on=.(ChrIdx=ChrIdx)][, Coord_Gene:=Start+Chr_Start]
+
+# build a table containing all info for the interactivity 
+FullTble=as.data.table(FullTble,keep.rownames = F)
+Exploration1=DTfuseMetaNLFC[FullTble[, .(Row.names, Note)], on=.(Gene=Row.names)]
+Exploration1=Exploration1[as.data.table(PCA_Data[,1:2],keep.rownames = T), on=.(Gene=rn)][DT_Chr[,.(Gene,Chr, Start, End,ChrIdx,Coord_Gene)], on=.(Gene=Gene)][!is.na(Comparaison),]
+Exploration1[, MaxFC:= Log.FC[which.max(abs(Log.FC))], by=Gene]
+
+# prepare shared data
+SharedGroup=paste(c(NameSharedData,"Exp"), collapse = "_")
+# SharedDT=SharedData$new(Exp, key = ~Gene)
+SharedDT_PCA=SharedData$new(unique(Exploration1[, .(Gene, Note,X1,X2, Cluster, Log.FC)], by="Gene"), key = ~Gene, group=SharedGroup)
+SharedDT_Violin=SharedData$new(Exploration1[, .SD,.SDcols= c("Gene","Cluster","Note",Condlabel, "Log.FC")], key = ~Gene, group=SharedGroup)
+SharedDT_Filters=SharedData$new(unique(Exploration1[, .(Gene, Cluster, MaxFC), by="Gene"]), key = ~Gene, group=SharedGroup)
+
+# Generate violin plots
+Generate_list_Stat_Compare_list_plotly=function(x){
+  Cond=as.character(unique(Exploration1[[x]]))
+
+  ListComp=list()
+  Ind=1
+  for (i in 2:length(Cond)){
+    ListComp[[Ind]]=as.character(c(Cond[1], Cond[i]))
+    Ind=Ind+1
+  }
+  D=data.table::copy(Exploration1[bol,])
+  setnames(D, old = x, new = "Var")
+
+  Formula2=as.formula(paste("~", paste(Condlabel[Condlabel!=x], collapse = "+")))
+  Formula1=as.formula(paste("~", paste(Condlabel[Condlabel==x], collapse = "+")))
+  # P=ggplot(D, aes(x=Var,y=Log.FC,fill=Var)) +
+  # geom_violin() +
+  # stat_compare_means( comparisons =ListComp , method = "t.test", label = "p.signif") +
+  # mynamesthemeSmall+ xlab(x)+ylab("Relative expr. [Log2(FC)]")+facet_wrap(Formula)+
+  #  theme(legend.position="none",axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+ P=SharedDT_Violin %>% 
+   plot_ly() %>%
+  add_trace(type="violin",x = Formula1,
+          y = ~Log.FC,
+          color = Formula2,
+          marker = list( size = 5, opacity=0.5),
+          points = "all",
+          jitter = 0.7,
+          pointpos = 0,
+              hoverinfo = "text",
+              hovertext = ~paste("Gene :", Gene,
+                                "<br>Descritpion :", str_wrap(Note,20),
+                                "<br>Cluster :", Cluster,
+                                "<br>log2(FC) :", Log.FC)
+  ) %>% layout( violinmode="group", legend=list(x=0, y=0.9))
+  return(P)
+}
+
+Violin_plots=lapply(Condlabel, Generate_list_Stat_Compare_list_plotly)
+
+p1=plot_ly(data = SharedDT_PCA) %>%
+  add_markers(x = ~X1,
+          y = ~X2, color=~as.factor(Cluster),
+              hoverinfo = "text",
+              hovertext = ~paste("Gene :", Gene,
+                                "<br>Descritpion :", str_wrap(Note,20),
+                                "<br>Cluster :", Cluster,
+                                "<br>log2(FC) :", Log.FC))
+
+Filters=list(
+    filter_checkbox(paste(c(SharedGroup, "Cluster"), collapse  = "_"), "Cluster", SharedDT_Filters, ~Cluster, inline = TRUE),
+    filter_slider(paste(c(SharedGroup, "Log_FC"), collapse  = "_"), "Highest Absolute log2(FC)",SharedDT_Filters, ~MaxFC, width = "100%",animate = F, round = 1, step = 0.5),
+    filter_select(paste(c(SharedGroup, "Gene"), collapse= "_"), "Gene", SharedDT_Filters,~Gene)
+  )
+
+bscols(list(Filters,p1),Violin_plots)
+
+# bscols(Filters,p1)
+
+```
+
+one two 
+
+***
+adsbvpashdvbpasuvbda
+
+
+### Expression relative to the chromozome location
+
+```{r, ste}
+# prepare shared data
+SharedGroup=paste(c(NameSharedData,"Chr"), collapse = "_")
+# SharedDT=SharedData$new(Exp, key = ~Gene)
+SharedDT_PCA=SharedData$new(unique(Exploration1[, .(Gene, Note,X1,X2, Cluster, Log.FC)], by="Gene"), key = ~Gene, group=SharedGroup)
+SharedDT_Violin=SharedData$new(Exploration1[, .SD,.SDcols= c("Gene", "Note","Chr","Start", "End", "ChrIdx", "Coord_Gene",Condlabel, "Log.FC")], key = ~Gene, group=SharedGroup)
+SharedDT_Filters=SharedData$new(unique(Exploration1[, .(Gene, Cluster, MaxFC), by="Gene"]), key = ~Gene, group=SharedGroup)
+
+
+Generate_list_Stat_Compare_list_plotly_chr=function(x){
+  Cond=as.character(unique(Exploration1[[x]]))
+
+  ListComp=list()
+  Ind=1
+  for (i in 2:length(Cond)){
+    ListComp[[Ind]]=as.character(c(Cond[1], Cond[i]))
+    Ind=Ind+1
+  }
+  D=data.table::copy(Exploration1[bol,])
+  setnames(D, old = x, new = "Var")
+
+  Formula2=as.formula(paste("~", paste(Condlabel[Condlabel!=x], collapse = "+")))
+  Formula1=as.formula(paste("~", paste(Condlabel[Condlabel==x], collapse = "+")))
+  # P=ggplot(D, aes(x=Var,y=Log.FC,fill=Var)) +
+  # geom_violin() +
+  # stat_compare_means( comparisons =ListComp , method = "t.test", label = "p.signif") +
+  # mynamesthemeSmall+ xlab(x)+ylab("Relative expr. [Log2(FC)]")+facet_wrap(Formula)+
+  #  theme(legend.position="none",axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+ P=Exploration1 %>% 
+   plot_ly() %>% 
+  group_by(ChrIdx)%>%
+  summarise(MinX=min(Coord_Gene), MaxX=max(Coord_Gene), X=unique(Chr), MinLFC=min(Log.FC))%>%
+  layout( legend = list(orientation = "v",   # show entries horizontally
+                     xanchor = "center",  # use center of legend as anchor
+                     x = 1, y=1),
+          xaxis=list(
+              showticklabels = FALSE,
+              tickvals=~MinX,
+              gridwidth=4,
+              gridcolor=toRGB("blue", alpha = 0.6)) ,
+          annotations= list(x=~(MaxX-(MaxX-MinX)/2),
+          y=~min(MinLFC),
+          text=~X,
+          ay=20,
+          ax=0))%>%
+  add_markers(data=SharedDT_Violin,
+              x = ~Coord_Gene,
+              y = ~Log.FC, 
+              color=Formula2,
+              symbol = Formula1,
+              hoverinfo = "text",
+              hovertext = ~paste("Gene :", Gene,
+                                "<br>Descritpion :", str_wrap(Note,20),
+                                "<br>Chromosome :", Chr ,
+                                "<br>Start :" , Start,
+                                "<br>End :", End))
+  return(P)
+}
+
+Violin_plots=lapply(Condlabel, Generate_list_Stat_Compare_list_plotly_chr)
+
+
+p1=plot_ly(data = SharedDT_PCA) %>%
+  add_markers(x = ~X1,
+          y = ~X2, color=~as.factor(Cluster),
+              hoverinfo = "text",
+              hovertext = ~paste("Gene :", Gene,
+                                "<br>Descritpion :", str_wrap(Note,20),
+                                "<br>Cluster :", Cluster,
+                                "<br>log2(FC) :", Log.FC))
+
+Filters=list(
+    filter_checkbox(paste(c(SharedGroup, "Cluster"), collapse  = "_"), "Cluster", SharedDT_Filters, ~Cluster, inline = TRUE),
+    filter_slider(paste(c(SharedGroup, "Log_FC"), collapse  = "_"), "Highest Absolute log2(FC)",SharedDT_Filters, ~MaxFC, width = "100%",animate = F, round = 1, step = 0.5),
+    filter_select(paste(c(SharedGroup, "Gene"), collapse= "_"), "Gene", SharedDT_Filters,~Gene)
+  )
+
+bscols(Filters,p1)
+bscols(Violin_plots)
+
+```
+blalb

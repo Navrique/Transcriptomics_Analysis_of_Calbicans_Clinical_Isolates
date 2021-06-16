@@ -1,0 +1,13 @@
+Package: org.Calbicans.eg.db
+Title: Genome wide annotation for Candida albicans
+Description: Genome wide annotation for Candida albicans, primarily based on mapping using Entrez Gene identifiers.
+Version: 0.1
+Author: Eric Durandau <eric.durandau@chuv.ch>
+Maintainer: Eric Durandau <eric.durandau@chuv.ch>
+Depends: R (>= 2.7.0), methods, AnnotationDbi (>= 1.54.1)
+Suggests: DBI, annotate, RUnit
+License: Artistic-2.0
+organism: Candida albicans
+species: Candida albicans
+biocViews: OrgDb, annotation
+
