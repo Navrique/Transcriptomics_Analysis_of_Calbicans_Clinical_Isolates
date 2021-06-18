@@ -2,6 +2,8 @@
 
 ### Cluster `r C`
 
+#### Association between Gene Onthologie terms and genes from the cluster `r C` 
+
 ``` {r P3 GO list, fig.height=18, fig.width=13}
 PlotNb=3
 if (length(PlotList[[as.character(C)]])<2){
@@ -21,6 +23,6 @@ if (length(PlotList[[as.character(C)]])<2){
 <!-- ``` -->
 
 
-<!-- blabla -->
+blabla
 
 

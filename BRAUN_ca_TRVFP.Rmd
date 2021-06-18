@@ -182,10 +182,10 @@ Column {.tabset}
 -------------------------------------
 
 ```{r Plot STRING Ca Time,  comment='', echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-out = NULL
+out2 = NULL
 for (i in ClustersID) {
   C=i
-  out <- c(out, knit_child(file.path("R",'20210608-STRING_Network.Rmd'), quiet=TRUE))
+  out <- c(out2, knit_child(file.path("R",'20210608-STRING_Network.Rmd'), quiet=TRUE))
 }
 cat(knit(text=unlist(paste(out, collapse = ' \n ')), quiet=TRUE))
 

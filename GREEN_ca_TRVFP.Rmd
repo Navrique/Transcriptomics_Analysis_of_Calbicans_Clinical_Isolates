@@ -114,7 +114,7 @@ LFC_Cutoff=0.5
 pVal_Cutoff=0.05
 # Clustering
 # Number of cluster
-ClustNumb=5
+ClustNumb=3
 # distance method
 DistMethod="manhattan"
 # agglomeration method

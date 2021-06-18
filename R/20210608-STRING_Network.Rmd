@@ -2,7 +2,9 @@
 
 ### Cluster `r C`
 
-``` {r P3 GO list, fig.height=8, fig.width=8}
+#### Major annotated connections between genes of the cluster `r C` 
+
+``` {r P3 string list, fig.height=8, fig.width=8}
 
 if (sum(StringMap$HC_Clusters==C)<10){
   print("the cluster does not have enought genes")
@@ -11,3 +13,4 @@ if (sum(StringMap$HC_Clusters==C)<10){
 }
 ```
 
+blabla

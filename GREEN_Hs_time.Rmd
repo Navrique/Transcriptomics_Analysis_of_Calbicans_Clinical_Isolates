@@ -51,7 +51,7 @@ if( ! require( "org.Calbicans.eg.db" , character.only = TRUE ) ){
 }
 ```
 
-Normalisation{storyboard}
+Normalisation {.storyboard}
 =====================================
 
 ```{r Var Hs GREEN}
@@ -111,7 +111,7 @@ LFC_Cutoff=0.5
 pVal_Cutoff=0.05
 # Clustering
   # Number of cluster
-ClustNumb=8
+ClustNumb=4
   # distance method
 DistMethod="manhattan"
   # agglomeration method

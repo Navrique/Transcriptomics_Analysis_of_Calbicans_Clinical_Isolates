@@ -137,30 +137,6 @@ GO
 library(org.Hs.eg.db)
 OrgDb=org.Hs.eg.db
 keytype="ENTREZID"
-GO_pValue=0.3
-GO_qValue=GO_pValue
-MinGO=10
-MaxGO=500
-# STRING
-STRING_DB=string_db_Hs
-StringConnection=50
-```
-
-```{r prepare Go hs time, child="R/20210608-GO.Rmd"}
-```
-
-
-GO
-=====================================
-
-
-```{r GO Hm TR-FP setup}
-#  GO enrichment
-# library(org.Calbicans.eg.db)
-#  GO enrichment
-library(org.Hs.eg.db)
-OrgDb=org.Hs.eg.db
-keytype="ENTREZID"
 GO_pValue=0.1
 GO_qValue=GO_pValue
 MinGO=10
