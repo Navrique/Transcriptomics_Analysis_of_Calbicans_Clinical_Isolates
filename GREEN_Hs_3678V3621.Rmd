@@ -125,3 +125,90 @@ Factor_Numb_Conditions_gene_diff_expressed=3
 ```{r KnitDEG Hm Time, child="R/20210526-DEG.Rmd"}
 ```
 
+
+GO
+=====================================
+
+
+```{r GO Hm TR-FP setup}
+#  GO enrichment
+# library(org.Calbicans.eg.db)
+#  GO enrichment
+library(org.Hs.eg.db)
+OrgDb=org.Hs.eg.db
+keytype="ENTREZID"
+GO_pValue=0.3
+GO_qValue=GO_pValue
+MinGO=10
+MaxGO=500
+# STRING
+STRING_DB=string_db_Hs
+StringConnection=50
+```
+
+```{r prepare Go hs time, child="R/20210608-GO.Rmd"}
+```
+
+
+GO
+=====================================
+
+
+```{r GO Hm TR-FP setup}
+#  GO enrichment
+# library(org.Calbicans.eg.db)
+#  GO enrichment
+library(org.Hs.eg.db)
+OrgDb=org.Hs.eg.db
+keytype="ENTREZID"
+GO_pValue=0.1
+GO_qValue=GO_pValue
+MinGO=10
+MaxGO=500
+# STRING
+STRING_DB=string_db_Hs
+StringConnection=50
+```
+
+```{r prepare Go hs time, child="R/20210608-GO.Rmd"}
+```
+
+
+Gene Networks
+=====================================
+
+Column {.tabset}
+-------------------------------------
+
+```{r Plot GO Ca Time,  comment='', echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+out = NULL
+for (i in ClustersID) {
+  C=i
+  # if (length(PlotList[[as.character(C)]])<2){
+  #   print("No GO emerge from that list of gene")
+  # }else{
+  #   out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
+  #   # print(C)
+  # }
+  out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
+}
+cat(knit(text=unlist(paste(out, collapse = '\n')), quiet=TRUE))
+
+```
+
+
+STRINGdb network
+=====================================
+
+Column {.tabset}
+-------------------------------------
+
+```{r Plot STRING Ca Time,  comment='', echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+out = NULL
+for (i in ClustersID) {
+  C=i
+  out <- c(out, knit_child(file.path("R",'20210608-STRING_Network.Rmd'), quiet=TRUE))
+}
+cat(knit(text=unlist(paste(out, collapse = ' \n ')), quiet=TRUE))
+
+```

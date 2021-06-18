@@ -1,0 +1,13 @@
+
+
+### Cluster `r C`
+
+``` {r P3 GO list, fig.height=8, fig.width=8}
+
+if (sum(StringMap$HC_Clusters==C)<10){
+  print("the cluster does not have enought genes")
+}else{
+  PlotSTRINGdbNetwork(StringMap,string_db = STRING_DB,Cluster = C, MaxConnection = StringConnection)
+}
+```
+

@@ -1,4 +1,5 @@
 name: "green-brown-blue"
+output_dir: "docs"
 navbar:
   title: "Transcriptomics analysis of pairs of Candida albicans clinical isolates"
   type: inverse

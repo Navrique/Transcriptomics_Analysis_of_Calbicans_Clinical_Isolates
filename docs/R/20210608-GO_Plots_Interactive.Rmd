@@ -20,8 +20,9 @@ ListTableGO=sapply(as.character(ClustersID), function(x){
 
 TableGO=as.data.table(rbindlist(ListTableGO,idcol = "Cluster"))
 
-TableDotplot=TableGO[, .(ID, Cluster, Description, GeneRatio, p.adjust, Count, GO_Class)][, GeneRatio:=sapply(GeneRatio, function(x) eval(parse(text=x)))][order(Count),]
+TableDotplot=TableGO[, .(ID, Cluster, Description, GeneRatio, p.adjust, Count, GO_Class)][, GeneRatio:=sapply(GeneRatio, function(x) eval(parse(text=x)))][order(Count),][, ID:= paste(ID, as.character(as.numeric(Cluster)),sep = ".")]
 TableDotplot=data.frame(TableDotplot,stringsAsFactors = F)
+
 
 SharedGroup=paste(c(NameSharedData,"GO"), collapse = "_")
 # SharedDT=SharedData$new(Exp, key = ~Gene)
@@ -38,8 +39,8 @@ gP=ggplot(SharedGO_Plot, aes(x=GeneRatio, y=ID, color=p.adjust, size=Count, labe
 
 filter_checkbox(paste(c(SharedGroup, "Cluster"), collapse  = "_"), "Cluster", SharedGO_Filter, ~Cluster, inline = TRUE)
 filter_checkbox(paste(c(SharedGroup, "GO_Class"), collapse  = "_"), "GO class", SharedGO_Filter, ~GO_Class, inline = TRUE)
-filter_slider(paste(c(SharedGroup, "Gene_Ratio"), collapse  = "_"), "Gene_Ratio",SharedGO_Filter, ~GeneRatio, width = "100%",animate = F, round = 4)
-filter_slider(paste(c(SharedGroup, "p_adjust"), collapse  = "_"), "p value",SharedGO_Filter, ~p.adjust, width = "100%",animate = F, round = 3)
+filter_slider(paste(c(SharedGroup, "Gene_Ratio"), collapse  = "_"), "Gene_Ratio",SharedGO_Filter, ~GeneRatio, width = "100%",animate = F, round = 3)
+filter_slider(paste(c(SharedGroup, "p_adjust"), collapse  = "_"), "p value",SharedGO_Filter, ~p.adjust, width = "100%",animate = F, round = 3,)
 
 # ggplotly(gP, dynamicTicks = "y")
 # bscols(Filters[1:2], Filters[3:4])
@@ -56,6 +57,10 @@ ggPLY=ggplotly(gP, dynamicTicks = T)
 
 ggPLY
 
+#  bscols(list(filter_checkbox(paste(c(SharedGroup, "Cluster"), collapse  = "_"), "Cluster", SharedGO_Filter, ~Cluster, inline = TRUE),
+# filter_checkbox(paste(c(SharedGroup, "GO_Class"), collapse  = "_"), "GO class", SharedGO_Filter, ~GO_Class, inline = TRUE),
+# filter_slider(paste(c(SharedGroup, "Gene_Ratio"), collapse  = "_"), "Gene_Ratio",SharedGO_Filter, ~GeneRatio, width = "100%",animate = F, round = 4),
+# filter_slider(paste(c(SharedGroup, "p_adjust"), collapse  = "_"), "p value",SharedGO_Filter, ~p.adjust, width = "100%",animate = F, round = 3)),ggPLY)
 ```
 
 Column {data-width=700}
@@ -78,6 +83,7 @@ ListTableGO=sapply(as.character(ClustersID), function(x){
 },USE.NAMES = T, simplify = F)
 
 TableGO=as.data.table(rbindlist(ListTableGO,idcol = "Cluster"))
+TableGO[,ID:=paste(ID, Cluster,sep = ".")]
 TableGO$pvalue=round(TableGO$pvalue,5)
 TableGO$p.adjust=round(TableGO$p.adjust,5)
 TableGO$qvalue=round(TableGO$qvalue,5)
@@ -101,6 +107,8 @@ DT::datatable(SharedGO_Data,
               class="compact",
               options=list(dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),deferRender=TRUE, scrollX = T, scrollY=300),
               rownames = F)
+
+ 
 ```
 
 <!-- ```{r Graph} -->

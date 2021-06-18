@@ -162,13 +162,32 @@ Column {.tabset}
 out = NULL
 for (i in ClustersID) {
   C=i
-  if (length(PlotList[[as.character(C)]])<2){
-    print("No GO emerge from that list of gene")
-  }else{
-    out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
-  }
+  # if (length(PlotList[[as.character(C)]])<2){
+  #   print("No GO emerge from that list of gene")
+  # }else{
+  #   out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
+  #   # print(C)
+  # }
+  out <- c(out, knit_child(file.path("R",'20210608-GO_Plots.Rmd'), quiet=TRUE))
 }
 cat(knit(text=unlist(paste(out, collapse = '\n')), quiet=TRUE))
+
+```
+
+
+STRINGdb network
+=====================================
+
+Column {.tabset}
+-------------------------------------
+
+```{r Plot STRING Ca Time,  comment='', echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+out = NULL
+for (i in ClustersID) {
+  C=i
+  out <- c(out, knit_child(file.path("R",'20210608-STRING_Network.Rmd'), quiet=TRUE))
+}
+cat(knit(text=unlist(paste(out, collapse = ' \n ')), quiet=TRUE))
 
 ```
 

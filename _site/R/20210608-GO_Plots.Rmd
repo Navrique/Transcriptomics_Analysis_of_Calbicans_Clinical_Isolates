@@ -20,14 +20,6 @@ P2=ggarrange(plotlist = TooPlot[1:length(TooPlot)-1], nrow=length(TooPlot)-1, al
 P2
 ```
 
-<!-- <div class='left' style='float:left;text-align:center;width:50%;'> -->
-
-#### StringDB network
-
-``` {r P3 GO list, fig.height=8, fig.width=8}
-PlotSTRINGdbNetwork(StringMap,string_db = STRING_DB,Cluster = C, MaxConnection = StringConnection)
-```
-
 
 blabla
 
