@@ -1,0 +1,317 @@
+KM20_15: RNA extraction for RNA-seq
+
+Aim:
+
+To compare patterns of differentially expressed genes in Candida albicans strains of the
+green pair, CEC3621 and CEC3678, as well as brown pair, CEC3605 and CEC3617. Method
+adapted from A. Kannan (D. Sanglard lab). |
+
+Conditions:
+Each condition in triplicate. Three different time points. Total = 72 samples.
+
+(Sample name) Condition
+
+ 
+
+(A)  CEC3621_Ohrs (G)  CEC3621 3hrs (M) CEC3621 6hrs |
+CEC3621_Ohrs (H) CEC3621 3hrs (N) CEC3621 6hrs
+
+CEC3621_Ohrs ()  CEC3621_3hrs (0)  CEC3621 6hrs
+
+      
+
+ 
+
+ 
+
+{Fr} \ 5 AS: GEL G FS
+(S) CEC3605 _Ohrs (Y)  CEC3605_3hrs (EE) CEC3605 _6hrs
+
+ 
+
+  
+      
+
+ 
+
+(T)  CEC3605 _Ohrs (Z)  CEC3605 3hrs (FF)  CEC3605_6hrs
+(U)  CEC3605 Ohrs (AA) CEC3605_3hrs (GG) CEC3605_6hrs
+(KK) TR +21_Ohrs (QQ) TR+21_3hrs (WW) TR +21_6hrs
+(LL) TR+21_Ohrs (RR) TR+21_3hrs TR + 21_6hrs
+(MM) TR+ +21_Ohrs (SS) TR+ + 21 _3hrs TR + + 21_6hrs
+ré (uv) 78 (BBE) TR + 76
+
+(CCC) TR +05_Ohrs (1) TR+05_ 3hrs (000) TR + 05_6hrs
+(DDD) TR + 05_Ohrs (JJJ) TR +05 3hrs (PPP) TR + 05_6hrs
+(EEE) TR +05 _Ohrs (KKK) TR + 05_3hrs (QQQ) TR + 05_6hrs
+
+TR TR TR
+
+TR TR TR
+
+TR TR TR
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+KA = arnw abs
+mrwibes <=  £- pm A2
+
+ 
+
+ 
+
+NA
+6 x AS Mb = en plage n6 ou. lu
+36 <20M +4
+72 hubes % gran ane abat
+TESvs fai
+
+ 
+
+| ARECAT SAT RITES TI O
+[Ve ne ch) Gb pr “Too HS
+Layout — Six different plates, three time points
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+1 2 3 4 5 6 7 8 9 10 11 12
+& : A
+B CEC3621 CEC3621 CEC3621 F2
+C 678 F12
+D 2
+E TR+21 TR+21 TR +21
+F TR +2 TR+ 78 TR + 78 F12
+H
+1 2 3 4 5 6 7 8 9 10 11 12
+A
+B CEC3605 CEC3605 CEC3605
+C
+D è
+E TR +05 TR+05 TR+05 F12
+F TR + TR + TR+
+G
+H
+Materials:
+
+For RNA extraction:
+
+Liquid Nitrogen.
+
+Tissue lyzer.
+
+Bench-top centrifuge (usually containing 24 wells).
+Freezer at -80°C.
+
+Quick-RNA Fungal/Bacterial Miniprep Kit (50 preps — Cat # R2014).
+
+o DNase/RNase-Free Water
+RNA Wash Buffer
+RNA Lysis Buffer
+RNA Prep Buffer
+Collection Tubes
+Zymo-Spin [ICG Columns
+ZR BashingBead Lysis Tubes (0.1 & 0.5 mm)
+Zymo-Spin IICR Columns
+Cell culture grade 100% Ethanol.
+DNA:-free kit (50 preps — Cat # AM1906)
+o rDNasel
+o 10X DNase | Buffer
+o  DNase Inactivation Reagent
+o Nuclease-free Water
+RNase free tubes.
+
+O0 O00O0OOOO
+
+ 
+Methods:
+
+Strains and media
+
+C. albicans isolates pairs from clade one CEC3621, CEC3678, CEC3605 and CEC3617
+were stored at -80 °C in glycerol supplemented medium. Strains were maintained in YPD
+(1% Yeast extract, 2% Peptone, 2% Glucose) agar plates and grown in YPD broth for
+overnight cultures the day before this experiment.
+
+Seeding C. albicans for RNA-seq
+
+The day before experiment, pre-overnights of C. albicans strains to be used are prepared in
+5 ml of YPD broth by taking up two-three colonies from a YPD agar plate. These are
+incubated at 30°C in a shaking incubator for 8 h approximately. Overnights of the strains are
+set up to a final concentration of an ODooo of 0.1 (1 x 10$ cells/ml) in 10 ml of YPD in
+Erlenmeyer flasks. Flasks are incubated at 30°C in a shaking incubator at 200 rpm.
+
+The day of experiment, C. albicans cells were centrifuged (500 Hl) and washed three times
+with PBS. The yeast cells were resuspended and diluted in F12 medium to obtain a
+concentration of 1.5 x 108 cells/ml. In six 96 well plates (two for each time point), relevant
+wells were filed with 100 pl of fresh F12 medium. A volume of 100 lil of the C. albicans cell
+dilutions was distributed to each well of the 96 well plate to obtain a concentration of 1.5 x
+107 cells/well.
+
+Plates are incubated at 37°C and 5% CO; for the relevant times.
+Times:
+
+- Candida cultures are taken out @ 00:00 h.
+
+- Candida cell dilutions are set up @ 00:00 h.
+
+- _Seeding of 0 h, 3 h and 6 h time points are set up @ 00:00 h.
+- Time point Oh is snap freezed immediately @ 00:00 h.
+
+-_ Plate of3his freezed @ 00:00 h.
+
+-__ Plate of6 his freezed @ 00:00 h.
+
+After X h of infection, plates are spun down at 1500 rpm for 5 min at 4°C. Keep the plate on
+ice. Remove 150 {il of the supernatant, seal plate with parafilm, and snap freeze immediately
+in liquid nitrogen. Plates are stored at -80°C until lysis and homogenization.
+
+RNA extraction (7h approx. for 45 samples) — Quick RNA Fungal/Bacterial Miniprep
+kit (Zymo)
+
+Add 96 ml of 100% ethanol to the 24 ml RNA wash buffer concentrate provided by the kit.
+Reconstitute the DNase | as indicated on the vial prior to use, and store at -20°C.
+
+Take the plates out of -80°C [@ 00:00 h] and add 150 pl of RNA Lysis Buffer to each well. Do
+not let the plate reach room temperature. Using a tip, scrape the cells off the wells and
+transfer to an Eppendorf tube containing 600 li of Lysis Buffer. Mix contents with a tip before
+transferring the whole 800 ll to the ZR BashingBead Lysis tubes (0.5 mm).
+
+Samples were homogenized six times for 2 minutes at 30 Hz using the TissueLyser Il [@
+00:00 h]. Every three steps, samples were cooled down on ice for -30 seconds. Even though
+samples came out of the homogenizer very warm — this is supposed to not be a problem.
+The tubes were centrifuged for 10 minutes at 10000 rpm at room temperature.
+
+RNA extraction procedure takes place at room temperature.
+
+Supernatants (500 ul approx.) were transferred to Zymo-Spin IIICG Columns placed on
+collection tubes. These were then centrifuged for 30 seconds. The flow through was mixed
+With one volume (500 pl) of 96-100% ethanol. Mixture was transferred to a Zymo-Spin IC
+column in a fresh collection tube and centrifuged for 30 seconds at 10000 rpm. Discard flow
+through.
+
+PRIS Ho ATOUT ÉRE LS + doa Ti SOTLrO Ar FH Fou FO 0/60 50 Far Oo A
+ 
+
+Add 400 ul of RNA Prep Buffer to the column and centrifuge for 30 seconds at 10000 rpm.
+Discard the flow through.
+
+Add 700 ul of RNA Wash Buffer to the column. Centrifuge for 30 sec at 10000 rpm. Discard
+the flow through.
+
+Add 400 ul of RNA Wash Buffer to the column. Let it stand for a couple of minutes.
+Centrifuge for 2 min, 10000 rpm. Discard the flow through.
+
+Place the column in a DNase/RNase free 1.5 ml Eppendorf tube. Add 40 ui RNase-free
+water directly to the membrane without touching it. Close the lid, and let it stand for 2 - 5
+minutes at room temperature. Centrifuge at 10000 rpm for 2 min to elute the RNA [@ 00:00
+h|.
+
+Prepare the DNase master mix: Add 0.1 volume (4 Hi} of 10X DNase |! Buffer and 1 pl of
+rDNase | to the RNA, and mix gently (for 28 samples + 112 li of DNase 1 Buffer and 28 ul of
+rDNase). Add 5 ul of the master mix to each sample. Incubate samples at 37°C for 30 min
+[@ 00:00 until 00:00 h].
+
+Resuspend the DNase inactivation reagent by flicking or vortexing. To stop the reaction, add
+0.1 volume (4 ul} of DNase inactivation Reagent and mix well. Incubate at least for 2 min, by
+flicking the tubes 2-3 times during this time [@ 00:00 h]. Centrifuge at 10000 rpm for 2 min.
+Transfer 35 ul of the supernatant RNA to a fresh tube.
+
+Quantify the amount of RNA using Nano-drop.
+
+Calendar:
+TR146 cells are seeded on 96 well plates on Sunday, 10! May 2020.
+
+Media of TR146 cells is changed and C. albicans overnight cultures are grown on Monday,
+11% May 2020.
+
+Seeding of Candida cells and snap freezing the plates for different time points is done on
+Tuesday, 12 May 2020.
+
+Samples for the Oh time point are processed for RNA extraction on Monday, 18" May 2020.
+Samples for the 3h time point are processed for RNA extraction on Tuesday, 19! May 2020.
+
+Samples for the 6h time point are processed for RNA extraction on Wednesday, 20* May
+2020.
+
+RNA will be send for quality assessment in Fragment analyser on XXXXXX, YY!" ZZZ 2020.
+
+Notes/Calculations:
+
