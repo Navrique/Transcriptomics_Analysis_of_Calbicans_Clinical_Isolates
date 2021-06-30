@@ -204,19 +204,19 @@ The list of genes of each cluster can also be used to query the [STRINGdb][strin
 
 ## 8.1 ANAPURNA-seq
 
-## 0. Quick start
+### 8.1.0 Quick start
 
 ANAPURNA-seq is designed to run on a UNIX-based system and **requires [miniconda][5], [zenity][4], Bash 3.2 (or later) and [Java 8 (or later, up to 15)][6]**. The computer (or sever) running ANAPURNA-seq must also be connected to the internet.
 
 Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`. A sequence of windows will appear prompting the user to choose reference genomes.
 
-## 1. Introduction
+### 8.1.1 Introduction
 
-![ANAPURNA](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/ANAPURNA-seq.png)
+![ANAPURNA](Figures/ANAPURNA-seq.png)
 
 ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often *gene* or *CDS*). The result of a run is basically one or multiple "readcount.txt" files (see *[fig A.1](#fA.1)*).	
 
-<a name="fA.1"></a>![read-procession-steps](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png)
+<a name="fA.1"></a>![read-procession-steps](Figures/20201209-Scheme-ANAPURNA.png)
 
 *fig A.1 : The various steps performed by ANAPURNA-seq* 
 
@@ -228,7 +228,7 @@ After reads have been compressed, filtered and corrected, they are ready to be a
 
 All the steps have been embedded in a *Nextflow* pipeline. Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages. Nextflow is based on the *data flow* programming model which greatly simplifies writing complex distributed pipelines. Parallelisation is implicitly defined by the processes input and output declarations. The resulting applications are inherently parallel and can scale-up or scale-out, transparently, without having to adapt to a specific platform architecture. This make the language perfectly suited to run on cluster architectures.
 
-## 2. Procedure to run ANAPURNA-seq 
+### 8.1.2 Procedure to run ANAPURNA-seq 
 
 1. Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`
 2. Go to the folder where *fastq.gz* have been saved
@@ -237,7 +237,7 @@ All the steps have been embedded in a *Nextflow* pipeline. Nextflow enables scal
 5. When the analysis is done the new message should appear prompting the user to remove or not temporary files. Click OK if you are sure everything has run properly otherwise, re-run ANAPURNA with the same setting.
 6. A last window should open indicating in which folder Results can be found
 
-## 3. Notes
+### 8.1.3 Notes
 
 * ANAPURNA-seq can be run stop at any time by selecting the terminal window showing the run progress and by clicking Ctrl+C
 * As long as the "work" directory is not deleted from the working directory, all processes already completed are saved. This is useful in case the user wish to run the pipeline multiple times on the same dataset. For example, if the users want to run ANAPURNA a second time and align reads on another genome, none of the steps prior alignment will be performed again. Only the alignment and the featurecount steps. This leads to a large gain of time for the other runs.

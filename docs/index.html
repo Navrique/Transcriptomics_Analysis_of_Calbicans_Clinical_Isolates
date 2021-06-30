@@ -577,28 +577,27 @@ div.tocify {
 <h1>8. Appendix</h1>
 <div id="anapurna-seq" class="section level2">
 <h2>8.1 ANAPURNA-seq</h2>
-</div>
-<div id="quick-start" class="section level2">
-<h2>0. Quick start</h2>
+<div id="quick-start" class="section level3">
+<h3>8.1.0 Quick start</h3>
 <p>ANAPURNA-seq is designed to run on a UNIX-based system and <strong>requires <a href="https://docs.conda.io/en/latest/miniconda.html" title="miniconda">miniconda</a>, <a href="https://doc.ubuntu-fr.org/zenity" title="Zenity">zenity</a>, Bash 3.2 (or later) and <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java 8 (or later, up to 15)</a></strong>. The computer (or sever) running ANAPURNA-seq must also be connected to the internet.</p>
 <p>Start ANAPURNA-seq by running the <code>$ sh RUN_ANAPURNAseq.sh</code>. A sequence of windows will appear prompting the user to choose reference genomes.</p>
 </div>
-<div id="introduction" class="section level2">
-<h2>1. Introduction</h2>
+<div id="introduction" class="section level3">
+<h3>8.1.1 Introduction</h3>
 <div class="figure">
-<img src="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/ANAPURNA-seq.png" alt="" />
+<img src="Figures/ANAPURNA-seq.png" alt="" />
 <p class="caption">ANAPURNA</p>
 </div>
 <p>ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often <em>gene</em> or <em>CDS</em>). The result of a run is basically one or multiple “readcount.txt” files (see <em><a href="#fA.1">fig A.1</a></em>).</p>
-<p><a name="fA.1"></a><img src="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png" alt="read-procession-steps" /></p>
+<p><a name="fA.1"></a><img src="Figures/20201209-Scheme-ANAPURNA.png" alt="read-procession-steps" /></p>
 <p><em>fig A.1 : The various steps performed by ANAPURNA-seq</em></p>
 <p>ANAPURNA-seq is using various software from the Bioconda and Conda Forge channels. All softwares are listed in <a href="#table1.1">Table 1.1</a> with their corresponding function into the pipeline. The first step consists in compressing fastq.gz files by reordering them by similarity. This is achieved using the clumpify function from the <a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" title="bbmap"><em>bbmap</em></a><a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> packages. This has the advantage to improve the speed of the downstream steps. Following compression, extremities of reads are trimmed to remove adaptors.</p>
 <p>Multiple steps of filtering are then applied on the compressed reads: Quality filtering, contamination removal, low complexity filtering, removal of artefacts. These are achieved using again the <a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" title="bbmap"><em>bbmap</em></a><a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a> packages. The last filtering step is the removal of rRNA using the <em><a href="https://github.com/biocore/sortmerna" title="sortmerna">sortmerna</a></em><a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a> package .</p>
 <p>After reads have been compressed, filtered and corrected, they are ready to be aligned to one or two reference genomes. This is achieved by using first the HiSAT <a href="http://subread.sourceforge.net/" title="subread">11</a> software and second the “featurecount” function of the <a href="http://subread.sourceforge.net/" title="subread"><em>subread</em></a> <a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a>package . The current list of available genomes are shown in <a href="#table1.2">Table 1.2</a>. At the end, of the whole procedure, QC reports and readcount table(s) are generated. QC report enables to check the quality of the reads pre- and post-processing. Readcount tables can then be used for different downstream analysis such as differential gene expression analysis.</p>
 <p>All the steps have been embedded in a <em>Nextflow</em> pipeline. Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages. Nextflow is based on the <em>data flow</em> programming model which greatly simplifies writing complex distributed pipelines. Parallelisation is implicitly defined by the processes input and output declarations. The resulting applications are inherently parallel and can scale-up or scale-out, transparently, without having to adapt to a specific platform architecture. This make the language perfectly suited to run on cluster architectures.</p>
 </div>
-<div id="procedure-to-run-anapurna-seq" class="section level2">
-<h2>2. Procedure to run ANAPURNA-seq</h2>
+<div id="procedure-to-run-anapurna-seq" class="section level3">
+<h3>8.1.2 Procedure to run ANAPURNA-seq</h3>
 <ol style="list-style-type: decimal">
 <li>Start ANAPURNA-seq by running the <code>$ sh RUN_ANAPURNAseq.sh</code></li>
 <li>Go to the folder where <em>fastq.gz</em> have been saved</li>
@@ -608,12 +607,13 @@ div.tocify {
 <li>A last window should open indicating in which folder Results can be found</li>
 </ol>
 </div>
-<div id="notes" class="section level2">
-<h2>3. Notes</h2>
+<div id="notes" class="section level3">
+<h3>8.1.3 Notes</h3>
 <ul>
 <li>ANAPURNA-seq can be run stop at any time by selecting the terminal window showing the run progress and by clicking Ctrl+C</li>
 <li>As long as the “work” directory is not deleted from the working directory, all processes already completed are saved. This is useful in case the user wish to run the pipeline multiple times on the same dataset. For example, if the users want to run ANAPURNA a second time and align reads on another genome, none of the steps prior alignment will be performed again. Only the alignment and the featurecount steps. This leads to a large gain of time for the other runs.</li>
 </ul>
+</div>
 </div>
 </div>
 <div id="table" class="section level1">
