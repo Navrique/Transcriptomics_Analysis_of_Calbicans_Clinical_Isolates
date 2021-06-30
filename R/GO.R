@@ -10,6 +10,7 @@
 # library(clusterProfiler)
 # library(enrichplot)
 # library(ggplot2)
+library(stringr)
 
 # Choose the destination Folder for download and db build 
 
