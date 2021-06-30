@@ -3,7 +3,10 @@ title: "Transcriptomics analysis of pairs of *Candida albicans* clinical isolate
 author: "Eric Durandau"
 date: "15/06/2021"
 output: html_document
+
+
 ---
+
 # Transcriptomics Profiling of Pairs of *Candida albicans* Clinical Isolates
 
 > Authors : 
@@ -76,7 +79,7 @@ Quantify the amount of RNA using Nano-drop.
 
 <a name="f1"></a>
 
-![ExpCond](Figures/ExpCond.svg)
+![ExpCond](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/ExpCond.svg)
 
 *fig1: experimental conditions*
 
@@ -96,9 +99,9 @@ RNA have been first quantify using fragment analyser and then sequenced using th
 
 > Author: Eric Durandau
 
-Read processing has been performed using a homemade bioinformatics pipeline called ANAPURNA-seq. A version of the software is available on [GitHUB][1][^1] and in the [current folder][2][^2]. ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of genes that can be associated with a chosen feature (often *gene* or *CDS*). For a detailed description of ANAPURNA-seq, see the [ANAPURNA-seq](#6.1-anapurna-seq) section in [Appendix](#6.-appendix).
+Read processing has been performed using a homemade bioinformatics pipeline called ANAPURNA-seq. A version of the software is available on [GitHUB][1][^1]. ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of genes that can be associated with a chosen feature (often *gene* or *CDS*). For a detailed description of ANAPURNA-seq, see the [ANAPURNA-seq](#8.1-anapurna-seq) section in [Appendix](#8.-appendix).
 
-This pipeline has been used to analyse the fastq data from the GREEN and BRAUN pair. Output of the pipeline have been added to the current folder (see the [data](Data/readcounts)). Readcount tables are then used for normalisation followed by differential gene expression analysis.
+This pipeline has been used to analyse the fastq data from the GREEN and BRAUN pair. Output of the pipeline have been added to the current folder (see the [data](Data)). Readcount tables are then used for normalisation followed by differential gene expression analysis.
 
 ## 5. Normalisation of read counts  
 
@@ -110,7 +113,7 @@ The first step consists in removing features, here genes, with no or low reads i
 
 <a name="f2"></a>
 
-![Library_size](Figures/BRAUNsequencing depth.png)
+![Library_size](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BRAUNsequencing depth.png)
 
 *fig 2 : Library size of the BRAUN pair run dataset*
 
@@ -122,7 +125,7 @@ The [calcNormFactors](https://www.rdocumentation.org/packages/edgeR/versions/4.1
 
 The boxplot in [fig 3.](#f3) represents the distribution of genes **log2(cpm)** prior and after correction. **cpm** are *count per milion* of read.
 
-<a name="f3"></a>![TMMCorrection](Figures/BRAUNTMM correction-1.png)
+<a name="f3"></a>![TMMCorrection](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BRAUNTMM correction-1.png)
 
 *fig 2 : TMM correction* 
 
@@ -140,43 +143,49 @@ This step might not be essential since all samples are from the same batch. This
 
 Different visualisation can be used to observe the correction of the batch effect. PCA plot is a scatter where each dot is a sample. Ideally, all replicates from a given condition should appear close to each other, indicating a good reproducibility. Our strategy based on the estimation of variables inducing noise may reduce the distance between replicates on the PCA plot (see [fig 3](#f3)).
 
-<a name="f3"></a>![PCA](Figures/BatchEffectRemoval_PCA.png) *fig 3 : Sample visualisation on a PCA plot*  
+<a name="f3"></a>![PCA](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BatchEffectRemoval_PCA.png) *fig 3 : Sample visualisation on a PCA plot*  
 
-## 5. Differential gene expression analysis
+## 5. Differential gene expression analysis <a name="5."></a>
 
 Differential gene expression analysis (DGEA[^DGEA]) consist in the comparison of the number of read counts associated with each genes between two conditions.  Since the dataset is a mix of multiple conditions, the DGEA can be design in different ways depending on whether want to identify genes differencially express between the two isolates, the three time point or the presence or absence of keratinocytes (see [fig1.](#f1)). For example, if the main question is to address whether genes are differentially expressed between the two isolates, the DGEA will be performed by comparing each samples of the Isolate 1 against the sample of the Isolate 2 in the same time and FP/TR conditions. This end up by a matrix of LFC[^18] values where to each line correspond a gene and to each column correspond a single comparison (see [fig 4.](#f4)).   
 
-<a name="f4"></a>![LFC](Figures/DGEA_BRAUN_Isolate_plot_heatmap-1.png)
+<a name="f4"></a>![LFC](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/DGEA_BRAUN_Isolate_plot_heatmap-1.png)
 
-*Fig 4.: Log2(Fold change) matrix. The analysis focus on the comparison between the CEC3617 (LD[^LD]) and the CEC3605 (HD[^HD])*
+*Fig 4.: Log2(Fold change) matrix. The analysis focus on the comparison between the CEC3617 (LD[^LD]) and the CEC3605 (HD[^HD]), The BRAUN pair*
 
 R and the [*limma* ][17][^17] package have been used to perform the differential gene expression analysis. In short, once experimental conditions to compare have been set, normalised read count tables are used to fit a linear a model for each gene (basically "averaging" gene expression along replicates). This process is achieved using the *LMfit()* function. Meanwhile, a contrast map defining conditions to compare is built using the *makeContrast()* function. Both the linear model and the contrast map are associated in a new linear model built using the *contrast.fit* function. 
 
 From the last linear model, statistics and log2 fold change (LFC[^18]) values can be extracted using *eBayes()*. Given a linear model fit from *lmFit()*, the function compute moderated t-statistics, moderated F-statistic, and log-odds of differential expression by empirical Bayes moderation of the standard errors towards a global value. Genes differentially expressed are then identified using  *decideTests()* and by applying a filtering based on a pvalue < 0.05% and a LFC > 0.5.   Genes differentially expressed at least 1/3 <sup>rd</sup> along all comparisons are conserved for the Clustering step.
 
-[^HD]:High Damaging isolate
+[^HD]: High Damaging isolate
 [^LD]: Low Damaging isolate
 [^DGEA]: Differential gene expression analysis
 
 ## 6. Gene Clustering
 
+Following the DGEA, selected genes are then clustered depending on their expression pattern. To do so, the LFC matrix from [5.](#5.) is reduced in two dimension using [Uniform Manifold Approximation and Projection](https://joss.theoj.org/papers/10.21105/joss.00861) (UMAP). Mostly used for single cell analysis, the nonlinear dimensionality-reduction technique was developed for the analysis of any type of high-dimensional data. Although principal component analysis (PCA) has historically been the  most commonly used method for dimensionality reduction, the importance  of nonlinear dimensionality reduction techniques has recently been  recognized. Nonlinear dimensionality reduction techniques are, notably,  able to avoid overcrowding of the representation, wherein distinct clusters are represented on an overlapping area.
 
+The LFC matrix from [5.](#5.) isreduced using the *umap()* function of the [M3C](https://bioconductor.org/packages/release/bioc/html/M3C.html)[^M3C] package, resulting to a scatter plot see [fig.5](#f5) where to each dot correspond a gene. They organised in the two dimension depending on their expression pattern. Following the UMAP dimension reduction genes are separated in clusters. First, distance matrix has been first calculated by the *dist()* function using the [manhattan][manhattan][^19] method. Second, hierarchical clustering (*hclust()* function)has been applied on the distance matrix using the "centroid" method. The tree has been cut (*cuttree()* function ) in as many group as the number of cluster to be searched. For BRAUN pair data focusing on the comparison of isolates, 8 clusters have been searched ([fig.5](#f5) ).
 
-##  
+<a name="f5"></a>![UMAP](Figures/BRAUN_ISOLATE_MAP.png)
 
-## 5. GO enrichment and STRINGdb gene network
+*Fig 5. : Result of the UMAP apply on the LFC matrix from  [5.](#5.)*
+
+[^M3C]: https://bioconductor.org/packages/release/bioc/html/M3C.html
+
+## 7. GO enrichment and STRINGdb gene network
 
 Each gene clusters identified in the previous section are then used to determine whether they are associated with known biological functions or whether they are known to be interconnected. [Gene Ontology (GO) enrichment analysis][20][^GO] and [STRINGdb][21][^string] are the two tools used to perform that task.
 
-### 5.1 GO enrichment
+### 7.1 GO enrichment
 
 Annotated genes are often associated with diverse referenced information. Three onthology classes have been defined by the consortium : Biological process (BP), Cellular Component (CC) and Molecular Function (MF). Each of these classes contains what is called "terms" that define a gene function. Terms can be connected with each other forming a hierarchical tree. Top terms have a very general and are thus associated with a large number of genes. On the opposite, terms at the tails of the tree define very precise gene functions and can be associated with a single gene. The goal of the analysis is to extract terms of each of the three trees for which the list of differentially expressed genes of each cluster is associated with. This list of term then indicate whether a biological function can be associated with a gene set cluster with a particular expression pattern.
 
-GO enrichment analysis has been performed using the R package [ClusterProfiler][CP][^CP]. First, a database containing the whole list of *Candida glabrata* annotated genes and their associated GO terms. The database has been built by associating the list of genes referenced in the [NCBI][NCBI][^NCBI] website, the chromosomal feature table of the CBS138  imported from the [Candida genome db][ChrFeatures][^ChrFeatures]website and gene association also imported from the  [Candida genome db][GeneAssociation][^GeneAssociation]. All tables are then used to build the database using the [AnnotationForge][AnnotationForge][^AnnotationForge] package. The *enrichGO()* function from the [ClusterProfiler][CP][^CP] package has been used to find GO terms associated with the gene set of each cluster.
+GO enrichment analysis has been performed using the R package [ClusterProfiler][CP][^CP]. First, a database containing the whole list of *Candida albicans* annotated genes and their associated GO terms. The database has been built by associating the list of genes referenced in the [NCBI][NCBI][^NCBI] website, the chromosomal feature table of the SC5314 imported from the [Candida genome db][ChrFeatures][^ChrFeatures]website and gene association also imported from the  [Candida genome db][GeneAssociation][^GeneAssociation]. All tables are then used to build the database using the [AnnotationForge][AnnotationForge][^AnnotationForge] package. The *enrichGO()* function from the [ClusterProfiler][CP][^CP] package has been used to find GO terms associated with the gene set of each cluster.
 
-### 5.2 STRINGdb[^string]
+### 7.2 STRINGdb[^string]
 
-The list of genes of each cluster can also be used to query the [STRINGdb][string][^string] database. STRING is a database of known and predicted protein-protein  interactions. The interactions include direct (physical) and indirect  (functional) associations; they stem from computational prediction, from knowledges transfer between organisms, and from interactions aggregated  from other (primary) databases. Interactions in STRING are derived from five main sources (see [fig4](#StringFig)) and currently covers 24'584'628 proteins from 5'090 organisms. Each gene set is used to interrogate the STRING network. This result in a network in which nodes are genes from the set connected or not depending on known protein-protein interaction. All of this has been achieved using the R package [STRINGdb][stringR][^stringR]. 
+The list of genes of each cluster can also be used to query the [STRINGdb][string][^string] database. STRING is a database of known and predicted protein-protein  interactions. The interactions include direct (physical) and indirect  (functional) associations; they stem from computational prediction, from knowledges transfer between organisms, and from interactions aggregated  from other (primary) databases. Interactions in STRING are derived from five main sources (see [fig6](#StringFig) and currently covers 24'584'628 proteins from 5'090 organisms. Each gene set is used to interrogate the STRING network. This result in a network in which nodes are genes from the set connected or not depending on known protein-protein interaction. All of this has been achieved using the R package [STRINGdb][stringR][^stringR]. 
 
 <a name="StringFig"></a>
 
@@ -184,23 +193,27 @@ The list of genes of each cluster can also be used to query the [STRINGdb][strin
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 |                                                              |                                                              |                                                              |                                                              |                                                              |
 
-*fig4: source data feeding the STRINGdb database*
+*fig6: source data feeding the STRINGdb database*
 
-## 6. Appendix
+## 8. Appendix
 
-### 6.1 ANAPURNA-seq
+### 8.1 ANAPURNA-seq
 
-#### 6.1.1 Introduction
+#### 0. Quick start
+
+ANAPURNA-seq is designed to run on a UNIX-based system and **requires [miniconda][5], [zenity][4], Bash 3.2 (or later) and [Java 8 (or later, up to 15)][6]**. The computer (or sever) running ANAPURNA-seq must also be connected to the internet.
+
+Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`. A sequence of windows will appear prompting the user to choose reference genomes.
+
+#### 1. Introduction
 
 ![ANAPURNA](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/ANAPURNA-seq.png)
 
 ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often *gene* or *CDS*). The result of a run is basically one or multiple "readcount.txt" files (see *[fig A.1](#fA.1)*).	
 
-<a name="fA.1"></a>![read-procession-steps](ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png)
+<a name="fA.1"></a>![read-procession-steps](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png)
 
 *fig A.1 : The various steps performed by ANAPURNA-seq* 
-
-ANAPURNA-seq is designed to run on a UNIX-based system and requires [miniconda][5], [zenity][4], Bash 4.2 (or later) and [Java 8 (or later, up to 15)][6]. The computer (or sever) running ANAPURNA-seq must also be connected to the internet.
 
 ANAPURNA-seq is using various  software from the Bioconda and Conda Forge channels. All softwares are listed in [Table 1.1](#table1.1) with their corresponding function into the pipeline. The first step consists in compressing fastq.gz files by reordering them by similarity. This is achieved using the clumpify function from the [*bbmap*][9][^9] packages. This has the advantage to improve the speed of the downstream steps. Following compression, extremities of reads are trimmed to remove adaptors. 
 
@@ -210,29 +223,19 @@ After reads have been compressed, filtered and corrected, they are ready to be a
 
 All the steps have been embedded in a *Nextflow* pipeline. Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages. Nextflow is based on the *data flow* programming model which greatly simplifies writing complex distributed pipelines. Parallelisation is implicitly defined by the processes input and output declarations. The resulting applications are inherently parallel and can scale-up or scale-out, transparently, without having to adapt to a specific platform architecture. This make the language perfectly suited to run on cluster architectures.
 
-#### 6.1.2 Procedure to run ANAPURNA-seq 
+#### 2. Procedure to run ANAPURNA-seq 
 
-1. Start the computer and enter my Linux session. Credentials have been furnished separately.
-2. open the terminal ![Terminal](/usr/share/icons/gnome/48x48/apps/terminal.png) and mount all drives using the following command (you need to enter the password since super user's right are necessary)
+1. Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`
+2. Go to the folder where *fastq.gz* have been saved
+3. Select the first genome on which reads have to be aligned
+4. Select the second genome on which reads, not aligned to the first genome, have to be aligned. Following that step, a terminal window should appear and give you the progress of the processing.
+5. When the analysis is done the new message should appear prompting the user to remove or not temporary files. Click OK if you are sure everything has run properly otherwise, re-run ANAPURNA with the same setting.
+6. A last window should open indicating in which folder Results can be found
 
-```bash
-MountDrives
-```
-
-3. Open the file manager and transfer fasq.gz files from the drive to a folder in the computer. Prefer to copy *fastq.gz* files in a new folder in */media/edurandau/DATA/Eric_Durandau/Sanglard/Data/Sequencing/Fastq_gz* 
-4. Click the ANAPURNA-seq icon on the desktop side bar <img src="ANAPURNA-seq/Icons/ANAPURNA-seq.png" alt="ANAPURNA" style="zoom:3%;" />
-5. Go to the folder where *fastq.gz* have been saved
-6. Select the first genome on which reads have to be aligned
-7. Select the second genome on which reads, not aligned to the first genome, have to be aligned. Following that step, a terminal window should appear and give you the progress of the processing.
-8. When the analysis is done the new message should appear prompting the user to remove or not temporary files. Click OK if you are sure everything has run properly otherwise, re-run ANAPURNA with the same setting.
-9. A last window should open indicating in which folder Results can be found
-
-#### 6.1.3 Notes
+#### 3. Notes
 
 * ANAPURNA-seq can be run stop at any time by selecting the terminal window showing the run progress and by clicking Ctrl+C
 * As long as the "work" directory is not deleted from the working directory, all processes already completed are saved. This is useful in case the user wish to run the pipeline multiple times on the same dataset. For example, if the users want to run ANAPURNA a second time and align reads on another genome, none of the steps prior alignment will be performed again. Only the alignment and the featurecount steps. This leads to a large gain of time for the other runs.
-
-
 
 ## Table
 
@@ -254,17 +257,18 @@ MountDrives
 
 ### Table 1.2: List of genomes currently available in ANAPURNA-seq <a name="table1.2"></a>
 
-| Specie               | Strain               |
-| -------------------- | -------------------- |
-| *Candida albicans*   | SC5314 [14][14][^14] |
-| Candida glabrata     | DSY562               |
-| Mus musculus         | GRCm38 [15][15][^15] |
-| Homo sapiens         | GRCh38 [16][16][^16] |
-| Mucor circinelloides | 1006Phmd             |
-| Rhizopus microsporus | ATCC52813            |
-| Candida lusitaniae   | DSY4606_V37          |
+| Specie                | Strain               |
+| --------------------- | -------------------- |
+| *Candida albicans*    | SC5314 [14][14][^14] |
+| Candida glabrata      | DSY562               |
+| Mus musculus          | GRCm38 [15][15][^15] |
+| Homo sapiens          | GRCh38 [16][16][^16] |
+| Mucor circinelloides  | 1006Phmd             |
+| Rhizopus microsporus  | ATCC52813            |
+| Candida lusitaniae    | DSY4606_V37          |
+| Aspergillus fumigatus | Af_293B              |
 
-### Table 1.3: Clinical isolate pair <a name="table1.3"></a>
+## Table 1.3: Clinical isolate pair <a name="table1.3"></a>
 
 | Pair name | Low damaging isolate | high damaging isolate |
 | --------- | -------------------- | --------------------- |
@@ -310,7 +314,7 @@ MountDrives
 [^16]: ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz 
 [^17]: https://kasperdanielhansen.github.io/genbioconductor/html/limma.html 
 [^18]: log2 fold change
-[^19]: https://en.wikipedia.org/wiki/Canberra_distance
+[^19]: https://xlinux.nist.gov/dads/HTML/manhattanDistance.html
 
 [20]: http://geneontology.org/	"GO"
 
@@ -326,19 +330,17 @@ MountDrives
 
 [AnnotationForge]: https://www.bioconductor.org/packages/release/bioc/vignettes/AnnotationForge/inst/doc/SQLForge.pdf	"Annotation Forge"
 [NCBI]: https://www.ncbi.nlm.nih.gov/gene/?term=txid5478Organism:exp	"Gene list NCBI"
-[ChrFeatures]: http://www.candidagenome.org/download/chromosomal_feature_files/C_glabrata_CBS138/C_glabrata_CBS138_current_chromosomal_feature.tab	"Chromosomal features"
+[ChrFeatures]: http://www.candidagenome.org/download/chromosomal_feature_files/C_albicans_SC5314/	"Chromosomal features"
 [GeneAssociation]: http://www.candidagenome.org/download/go/	"GO association"
-
-[]: 
 
 [stringR]: https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html	"STRINGdb package"
 
 [^stringR]: https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html 
 [^GeneAssociation]: http://www.candidagenome.org/download/go/
-[^ChrFeatures]: http://www.candidagenome.org/download/chromosomal_feature_files/C_glabrata_CBS138/C_glabrata_CBS138_current_chromosomal_feature.tab
+[^ChrFeatures]: http://www.candidagenome.org/download/chromosomal_feature_files/C_albicans_SC5314/
 [^NCBI]: https://www.ncbi.nlm.nih.gov/gene/?term=txid5478
 [^AnnotationForge]: https://www.bioconductor.org/packages/release/bioc/vignettes/AnnotationForge/inst/doc/SQLForge.pdf
 [^SalomeGrp]: University of  Zurich https://www.vetvir.uzh.ch/en/Research/Immunology.html
 
-
+[manhattan]: https://xlinux.nist.gov/dads/HTML/manhattanDistance.html	"Manhattan distance"
 

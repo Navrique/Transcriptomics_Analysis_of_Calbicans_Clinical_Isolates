@@ -9,6 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Eric Durandau" />
 
 
 <title>Transcriptomics analysis of pairs of Candida albicans clinical isolates</title>
@@ -16,7 +17,7 @@
 <script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -218,6 +222,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -225,6 +292,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -325,139 +402,439 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Transcriptomics analysis of pairs of <em>Candida albicans</em> clinical isolates</h1>
+<h4 class="author">Eric Durandau</h4>
+<h4 class="date">15/06/2021</h4>
 
 </div>
 
 
-<pre class="r"><code>InstallPackages=function(x){
-  if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE)) install.packages(&quot;BiocManager&quot;)
-  for( i in x ){
-    #  require returns TRUE invisibly if it was able to load package
-    if( ! require( i , character.only = TRUE ) ){
-      # check the package is a bioconductor package and install it if required
-      if (length(BiocManager::available(paste0(&quot;^&quot;,i,&quot;$&quot;)))&gt;0){
-        BiocManager::install(i)
-      }
-      else{
-        #  If package was not able to be loaded then re-install
-        install.packages( i , dependencies = TRUE )
-      }
-      #  Load package after installing
-      require( i , character.only = TRUE )
-    }
-  }
-}
-Pkg_list=c(&quot;devtools&quot;,
-           &quot;flexdashboard&quot;,
-           &quot;stringr&quot;,
-           &quot;data.table&quot;,
-           &quot;knitr&quot;,
-           &quot;kableExtra&quot;,
-           &quot;rmarkdown&quot;,
-           &quot;crosstalk&quot;,
-           &quot;RColorBrewer&quot;,
-           &quot;gridExtra&quot;,
-           &quot;grid&quot;,
-           &quot;ggplot2&quot;,
-           &quot;plotly&quot;,
-           &quot;R.utils&quot;,
-           &quot;STRINGdb&quot;,
-           &quot;crosstalk&quot;,
-           &quot;tidyr&quot;,
-           &quot;limma&quot;,
-           &quot;edgeR&quot;,
-           &quot;sva&quot;,
-           &quot;DT&quot;,
-           &quot;pheatmap&quot;,
-           &quot;org.Hs.eg.db&quot;,
-           &quot;M3C&quot;,
-           &quot;ggpubr&quot;,
-           &quot;clusterProfiler&quot;,
-           &quot;ggnewscale&quot;
-)
-InstallPackages(Pkg_list)</code></pre>
-<pre><code>## Loading required package: devtools</code></pre>
-<pre><code>## Loading required package: usethis</code></pre>
-<pre><code>## Loading required package: flexdashboard</code></pre>
-<pre><code>## Loading required package: rmarkdown</code></pre>
-<pre><code>## Loading required package: R.utils</code></pre>
-<pre><code>## Loading required package: R.oo</code></pre>
-<pre><code>## Loading required package: R.methodsS3</code></pre>
-<pre><code>## R.methodsS3 v1.8.1 (2020-08-26 16:20:06 UTC) successfully loaded. See ?R.methodsS3 for help.</code></pre>
-<pre><code>## R.oo v1.24.0 (2020-08-26 16:11:58 UTC) successfully loaded. See ?R.oo for help.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;R.oo&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:R.methodsS3&#39;:
-## 
-##     throw</code></pre>
-<pre><code>## The following objects are masked from &#39;package:devtools&#39;:
-## 
-##     check, unload</code></pre>
-<pre><code>## The following object is masked from &#39;package:IRanges&#39;:
-## 
-##     trim</code></pre>
-<pre><code>## The following objects are masked from &#39;package:methods&#39;:
-## 
-##     getClasses, getMethods</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     attach, detach, load, save</code></pre>
-<pre><code>## R.utils v2.10.1 (2020-08-26 22:50:31 UTC) successfully loaded. See ?R.utils for help.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;R.utils&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
-## 
-##     extract</code></pre>
-<pre><code>## The following object is masked from &#39;package:utils&#39;:
-## 
-##     timestamp</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     cat, commandArgs, getOption, inherits, isOpen, nullfile, parse,
-##     warnings</code></pre>
-<pre><code>## Loading required package: STRINGdb</code></pre>
-<pre><code>## Loading required package: DT</code></pre>
-<pre><code>## Loading required package: M3C</code></pre>
-<pre><code>## Loading required package: clusterProfiler</code></pre>
-<pre><code>## clusterProfiler v4.0.0  For help: https://guangchuangyu.github.io/software/clusterProfiler
-## 
-## If you use clusterProfiler in published research, please cite:
-## Guangchuang Yu, Li-Gen Wang, Yanyan Han, Qing-Yu He. clusterProfiler: an R package for comparing biological themes among gene clusters. OMICS: A Journal of Integrative Biology. 2012, 16(5):284-287.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;clusterProfiler&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:AnnotationDbi&#39;:
-## 
-##     select</code></pre>
-<pre><code>## The following object is masked from &#39;package:IRanges&#39;:
-## 
-##     slice</code></pre>
-<pre><code>## The following object is masked from &#39;package:S4Vectors&#39;:
-## 
-##     rename</code></pre>
-<pre><code>## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter</code></pre>
-<pre><code>## Loading required package: ggnewscale</code></pre>
-<pre class="r"><code># GitHub packages
-devtools::install_github(&quot;rstudio/crosstalk&quot;)</code></pre>
-<pre><code>## Skipping install of &#39;crosstalk&#39; from a github remote, the SHA1 (f8e0fa44) has not changed since last install.
-##   Use `force = TRUE` to force installation</code></pre>
-<pre class="r"><code>remotes::install_github(&quot;vqv/ggbiplot&quot;)</code></pre>
-<pre><code>## Skipping install of &#39;ggbiplot&#39; from a github remote, the SHA1 (7325e880) has not changed since last install.
-##   Use `force = TRUE` to force installation</code></pre>
-<pre class="r"><code># library(data.table)
-# library(knitr)
-# library(kableExtra)
-# # library(ggsignif)
-# library(ggpubr)
-# library(grid)
-# library(gridExtra)
-# library(RColorBrewer)
-# library(org.Hs.eg.db)
-# library(crosstalk)</code></pre>
+<blockquote>
+<p>Authors :</p>
+<ul>
+<li>Kontxi Martinez, UZH, Zurich, Switzerland</li>
+<li>Eric Durandau, IMU-CHUV, Lausanne, Switzerland</li>
+</ul>
+</blockquote>
+<p><a name="beginning"> </a></p>
+<p>Welcome to the web interface of the transcriptomics profiling s of pairs of <em>Candida albicans</em> clinical isolates. This web interface contains results of a trancriptomics analysis aiming at comparing the transcriptomics profile of pairs of <em>Candida albicans</em> clinical isolates.</p>
+<p>This work is result from a collaboration between the group of Salome Leibundgut-Landmann <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> and the group of Dominique Sanglard<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<div id="experimental-conditions" class="section level1">
+<h1>1. Experimental conditions</h1>
+<blockquote>
+<p>Author: Kontxi Martinez<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+</blockquote>
+<div id="strains-and-media" class="section level2">
+<h2>1.1 Strains and media</h2>
+<p><em>C. albicans</em> isolates pairs from different clades (see [table 1.3][#table1.3]) were stored in -80°C in glycerol supplemented medium. Strains were maintained in YPD (1% Yeast extract, 2% Peptone, 2% Glucose) agar plates and grown in YPD broth for overnight cultures the day before this experiment.</p>
+</div>
+<div id="seeding-c.-albicans-for-rna-seq-see-fig1" class="section level2">
+<h2>1.2 Seeding C. albicans for RNA-seq (see <a href="#f1">fig1</a>)</h2>
+<p>The day before experiment, pre-overnights of C. albicans strains to be used are prepared in 5 ml of YPD broth by taking up two-three colonies from a YPD agar plate. These are incubated at 30°C in a shaking incubator for 8 h approximately. Overnights of the strains are set up to a final concentration of an OD<sub>600</sub> of 0.1 (1 x 10<sup>6</sup> cells/ml) in 10 ml of YPD in Erlenmeyer flasks. Flasks are incubated at 30°C in a shaking incubator at 200 rpm.</p>
+<p>The day of experiment, C. albicans cells were centrifuged (500 Hl) and washed three times with PBS. The yeast cells were resuspended and diluted in F12 medium to obtain a concentration of 1.5 x 10<sup>8 </sup> cells/ml. In six 96 well plates (two for each time point), relevant wells were filed with 100 pl of fresh F12 medium. A volume of 100 µL of the C. albicans cell dilutions was distributed to each well of the 96 well plate to obtain a concentration of 1.5 x 10<sup>7</sup> cells/well.</p>
+<p>Plates are incubated at 37°C and 5% CO; for the relevant times. Times:</p>
+<ul>
+<li>Candida cultures are taken out @ 00:00 h.</li>
+<li>Candida cell dilutions are set up @ 00:00 h.</li>
+<li>Seeding of 0 h, 3 h and 6 h time points are set up @ 00:00 h.</li>
+<li>Time point 0h is snap freezed immediately @ 00:00 h.</li>
+<li>Plate of 3h freezed @ 00:00 h.</li>
+<li>Plate of 6h freezed @ 00:00 h.</li>
+</ul>
+<p>After X h of infection, plates are spun down at 1500 rpm for 5 min at 4°C. Keep the plate onice. Remove 150 µL of the supernatant, seal plate with parafilm, and snap freeze immediately in liquid nitrogen. Plates are stored at -80°C until lysis and homogenization.</p>
+</div>
+<div id="rna-extraction" class="section level2">
+<h2>1.3 RNA extraction</h2>
+<p>Add 96 ml of 100% ethanol to the 24 ml RNA wash buffer concentrate provided by the kit. Reconstitute the DNase | as indicated on the vial prior to use, and store at -20°C.</p>
+<p>Take the plates out of -80°C [@ 00:00 h] and add 150 µl of RNA Lysis Buffer to each well. Do not let the plate reach room temperature. Using a tip, scrape the cells off the wells and transfer to an Eppendorf tube containing 600 µl of Lysis Buffer. Mix contents with a tip before transferring the whole 800 µL to the ZR BashingBead Lysis tubes (0.5 mm).</p>
+<p>Samples were homogenized six times for 2 minutes at 30 Hz using the TissueLyser Il <span class="citation">[@00:00 h]</span>. Every three steps, samples were cooled down on ice for -30 seconds. Even though samples came out of the homogenizer very warm — this is supposed to not be a problem. The tubes were centrifuged for 10 minutes at 10000 rpm at room temperature.</p>
+<p>RNA extraction procedure takes place at room temperature.</p>
+<p>Supernatants (500 µl approx.) were transferred to Zymo-Spin IIICG Columns placed on collection tubes. These were then centrifuged for 30 seconds. The flow through was mixed With one volume (500 µl) of 96-100% ethanol. Mixture was transferred to a Zymo-Spin IC column in a fresh collection tube and centrifuged for 30 seconds at 10000 rpm. Discard flow through. </p>
+<p>Add 400 µl of RNA Prep Buffer to the column and centrifuge for 30 seconds at 10000 rpm. Discard the flow through.</p>
+<p>Add 700 µl of RNA Wash Buffer to the column. Centrifuge for 30 sec at 10000 rpm. Discard the flow through.</p>
+<p>Add 400 µl of RNA Wash Buffer to the column. Let it stand for a couple of minutes. Centrifuge for 2 min, 10000 rpm. Discard the flow through.</p>
+<p>Place the column in a DNase/RNase free 1.5 ml Eppendorf tube. Add 40 ui RNase-free water directly to the membrane without touching it. Close the lid, and let it stand for 2 - 5 minutes at room temperature. Centrifuge at 10000 rpm for 2 min to elute the RNA [@ 00:00h].</p>
+<p>Prepare the DNase master mix: Add 0.1 volume (4 Hi} of 10X DNase |! Buffer and 1 pl of rDNase | to the RNA, and mix gently (for 28 samples + 112 li of DNase 1 Buffer and 28 ul of rDNase). Add 5 ul of the master mix to each sample. Incubate samples at 37°C for 30 min [@ 00:00 until 00:00 h].</p>
+<p>Resuspend the DNase inactivation reagent by flicking or vortexing. To stop the reaction, add 0.1 volume (4 ul} of DNase inactivation Reagent and mix well. Incubate at least for 2 min, by flicking the tubes 2-3 times during this time [@ 00:00 h]. Centrifuge at 10000 rpm for 2 min. Transfer 35 ul of the supernatant RNA to a fresh tube.</p>
+<p>Quantify the amount of RNA using Nano-drop.</p>
+<p><a name="f1"></a></p>
+<div class="figure">
+<img src="Figures/ExpCond.svg" alt="" />
+<p class="caption">ExpCond</p>
+</div>
+<p><em>fig1: experimental conditions</em></p>
+</div>
+</div>
+<div id="sequencing" class="section level1">
+<h1>2. Sequencing</h1>
+<blockquote>
+<p>Author: Eric Durandau</p>
+</blockquote>
+<p>72 samples tubes containing 50µL of RNA extract each as been sent from Zurich To . Prior library preparation the LGTF need to assess the quality of the RNA. RNA extracts are spread into 8-PCR tubes strips and concentration is measured using Nanodrop. For a standard sensitivity assay, sample should not exceed a concentration of 500ng/µL and above 30ng/µL in an optimal volume of 4µL.</p>
+<p>RNA have been first quantify using fragment analyser and then sequenced using the TrueSeq illumina technology. Library preparation and sequencing have been performed by the <a href="https://wp.unil.ch/gtf/">GTF</a><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> platform.</p>
+</div>
+<div id="read-processing-genome-alignment-and-read-count" class="section level1">
+<h1>4. Read processing, genome alignment and read count</h1>
+<blockquote>
+<p>Author: Eric Durandau</p>
+</blockquote>
+<p>Read processing has been performed using a homemade bioinformatics pipeline called ANAPURNA-seq. A version of the software is available on <a href="https://github.com/Navrique/ANAPURNAseq" title="ANAPURNAseq GitHUB">GitHUB</a><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of genes that can be associated with a chosen feature (often <em>gene</em> or <em>CDS</em>). For a detailed description of ANAPURNA-seq, see the <a href="#8.1-anapurna-seq">ANAPURNA-seq</a> section in <a href="#8.-appendix">Appendix</a>.</p>
+<p>This pipeline has been used to analyse the fastq data from the GREEN and BRAUN pair. Output of the pipeline have been added to the current folder (see the <a href="Data">data</a>). Readcount tables are then used for normalisation followed by differential gene expression analysis.</p>
+</div>
+<div id="normalisation-of-read-counts" class="section level1">
+<h1>5. Normalisation of read counts</h1>
+<blockquote>
+<p>Author: Eric Durandau</p>
+</blockquote>
+<div id="filtering-out-genes-with-low-read-counts" class="section level2">
+<h2>5.1 Filtering out genes with low read counts</h2>
+<p>The first step consists in removing features, here genes, with no or low reads in all samples. The sequencing detection limit is estimated at 10. This means that genes with fewer than 10 reads in all samples are considered as not expressed (or expressed under the detection limit) and are thus removed from the analysis. Here, 0 genes have been rejected. The filtering is based on the <a href="https://rdrr.io/bioc/edgeR/man/filterByExpr.html">filterByExpr</a> from the <a href="https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf">edgeR</a> package. The <a href="#f2">fig1</a> shows the library size after the filtering procedure has been applied.</p>
+<p><a name="f2"></a></p>
+<div class="figure">
+<img src="Figures/BRAUNsequencing%20depth.png" alt="" />
+<p class="caption">Library_size</p>
+</div>
+<p><em>fig 2 : Library size of the BRAUN pair run dataset</em></p>
+</div>
+<div id="tmm-based-data-correction" class="section level2">
+<h2>5.2 TMM based data correction</h2>
+<p>This step consists in removing the compositions bias using the TMM (Trimmed means of M-value) <a href="8https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25">Robinson and Oshlack 2010</a>. In short, samples with different library size cannot be compared with each other. The process consists in normalise the read count such like each sample has artificially the same total number of reads.</p>
+<p>The <a href="https://www.rdocumentation.org/packages/edgeR/versions/4.16.0/topics/calcNormFactors">calcNormFactors</a> from the <a href="https://bioconductor.org/packages/release/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf">edgeR</a> package has been used to perform this process.</p>
+<p>The boxplot in <a href="#f3">fig 3.</a> represents the distribution of genes <strong>log2(cpm)</strong> prior and after correction. <strong>cpm</strong> are <em>count per milion</em> of read.</p>
+<p><a name="f3"></a><img src="Figures/BRAUNTMM%20correction-1.png" alt="TMMCorrection" /></p>
+<p><em>fig 2 : TMM correction</em></p>
+</div>
+<div id="voom-transform-of-counts-removing-heteroscedascity-from-count-data" class="section level2">
+<h2>5.3 Voom transform of counts : removing heteroscedascity from count data</h2>
+<p>The basic principle is to remove a bias related to the relationship between gene expression variances and gene expression means. The more condition/replicate we have the better it is. <em>voom</em> aim at prepare the data for a further linear fit see chapter 6.2 of <a href="https://bioconductor.org/packages/release/workflows/vignettes/RNAseq123/inst/doc/limmaWorkflow.html">RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR</a>. This operation is performed using the <a href="https://www.rdocumentation.org/packages/limma/versions/4.28.14/topics/voom">voom</a> function from the <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf">limma</a> package.</p>
+<p>For a given data set with multiple samples, it is expected the average read count associated to a gene should not depend on its variance. More simply, the variability among samples should be similar for all the genes and not depends on their average expression level. For RNAseq data, this relationship between variability and expression is unfortunately true (figure right). Lower will be the global number of reads associated to a gene, higher will be the variability among samples. This may have an impact on p-value when comparing the expression of genes between two samples.</p>
+<p>Voom transform attempt to correct for this bias. From the comparison of the standard deviation against the average read count of each gene, a model is built (right panel, red line) and used to correct read counts value (left panel). Differential gene expression</p>
+</div>
+<div id="batch-effect-correction" class="section level2">
+<h2>5.4 Batch effect correction</h2>
+<p>This step might not be essential since all samples are from the same batch. This can be interesting if sequencing files come from different runs or lanes. The <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3307112/">SVA</a> package has been used to infer batch effects. Very quickly sva estimate the number of covariate (surrogate variable) and then adjust value to remove the noise associated with such covariate. Then adjust for the batch effects using Surrogate variables. Here the strategy consists in let the algorithm estimate the potential batch variables rather than feeding it with known sources of batch effect.</p>
+<p>Different visualisation can be used to observe the correction of the batch effect. PCA plot is a scatter where each dot is a sample. Ideally, all replicates from a given condition should appear close to each other, indicating a good reproducibility. Our strategy based on the estimation of variables inducing noise may reduce the distance between replicates on the PCA plot (see <a href="#f3">fig 3</a>).</p>
+<p><a name="f3"></a><img src="Figures/BatchEffectRemoval_PCA.png" alt="PCA" /> <em>fig 3 : Sample visualisation on a PCA plot</em></p>
+</div>
+</div>
+<div id="differential-gene-expression-analysis" class="section level1">
+<h1>5. Differential gene expression analysis <a name="5."></a></h1>
+<p>Differential gene expression analysis (DGEA<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>) consist in the comparison of the number of read counts associated with each genes between two conditions. Since the dataset is a mix of multiple conditions, the DGEA can be design in different ways depending on whether want to identify genes differencially express between the two isolates, the three time point or the presence or absence of keratinocytes (see <a href="#f1">fig1.</a>). For example, if the main question is to address whether genes are differentially expressed between the two isolates, the DGEA will be performed by comparing each samples of the Isolate 1 against the sample of the Isolate 2 in the same time and FP/TR conditions. This end up by a matrix of LFC<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> values where to each line correspond a gene and to each column correspond a single comparison (see <a href="#f4">fig 4.</a>).</p>
+<p><a name="f4"></a><img src="Figures/DGEA_BRAUN_Isolate_plot_heatmap-1.png" alt="LFC" /></p>
+<p><em>Fig 4.: Log2(Fold change) matrix. The analysis focus on the comparison between the CEC3617 (LD<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>) and the CEC3605 (HD<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>), The BRAUN pair</em></p>
+<p>R and the <a href="https://kasperdanielhansen.github.io/genbioconductor/html/limma.html" title="limma"><em>limma</em></a><a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> package have been used to perform the differential gene expression analysis. In short, once experimental conditions to compare have been set, normalised read count tables are used to fit a linear a model for each gene (basically “averaging” gene expression along replicates). This process is achieved using the <em>LMfit()</em> function. Meanwhile, a contrast map defining conditions to compare is built using the <em>makeContrast()</em> function. Both the linear model and the contrast map are associated in a new linear model built using the <em>contrast.fit</em> function.</p>
+<p>From the last linear model, statistics and log2 fold change (LFC<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>) values can be extracted using <em>eBayes()</em>. Given a linear model fit from <em>lmFit()</em>, the function compute moderated t-statistics, moderated F-statistic, and log-odds of differential expression by empirical Bayes moderation of the standard errors towards a global value. Genes differentially expressed are then identified using <em>decideTests()</em> and by applying a filtering based on a pvalue &lt; 0.05% and a LFC &gt; 0.5. Genes differentially expressed at least 1/3 <sup>rd</sup> along all comparisons are conserved for the Clustering step.</p>
+</div>
+<div id="gene-clustering" class="section level1">
+<h1>6. Gene Clustering</h1>
+<p>Following the DGEA, selected genes are then clustered depending on their expression pattern. To do so, the LFC matrix from <a href="#5.">5.</a> is reduced in two dimension using <a href="https://joss.theoj.org/papers/10.21105/joss.00861">Uniform Manifold Approximation and Projection</a> (UMAP). Mostly used for single cell analysis, the nonlinear dimensionality-reduction technique was developed for the analysis of any type of high-dimensional data. Although principal component analysis (PCA) has historically been the most commonly used method for dimensionality reduction, the importance of nonlinear dimensionality reduction techniques has recently been recognized. Nonlinear dimensionality reduction techniques are, notably, able to avoid overcrowding of the representation, wherein distinct clusters are represented on an overlapping area.</p>
+<p>The LFC matrix from <a href="#5.">5.</a> isreduced using the <em>umap()</em> function of the <a href="https://bioconductor.org/packages/release/bioc/html/M3C.html">M3C</a><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> package, resulting to a scatter plot see <a href="#f5">fig.5</a> where to each dot correspond a gene. They organised in the two dimension depending on their expression pattern. Following the UMAP dimension reduction genes are separated in clusters. First, distance matrix has been first calculated by the <em>dist()</em> function using the <a href="https://xlinux.nist.gov/dads/HTML/manhattanDistance.html" title="Manhattan distance">manhattan</a><a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> method. Second, hierarchical clustering (<em>hclust()</em> function)has been applied on the distance matrix using the “centroid” method. The tree has been cut (<em>cuttree()</em> function ) in as many group as the number of cluster to be searched. For BRAUN pair data focusing on the comparison of isolates, 8 clusters have been searched (<a href="#f5">fig.5</a> ).</p>
+<p><a name="f5"></a><img src="Figures/BRAUN_ISOLATE_MAP.png" alt="UMAP" /></p>
+<p><em>Fig 5. : Result of the UMAP apply on the LFC matrix from <a href="#5.">5.</a></em></p>
+</div>
+<div id="go-enrichment-and-stringdb-gene-network" class="section level1">
+<h1>7. GO enrichment and STRINGdb gene network</h1>
+<p>Each gene clusters identified in the previous section are then used to determine whether they are associated with known biological functions or whether they are known to be interconnected. <a href="http://geneontology.org/" title="GO">Gene Ontology (GO) enrichment analysis</a><a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> and [STRINGdb][21]<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> are the two tools used to perform that task.</p>
+<div id="go-enrichment" class="section level2">
+<h2>7.1 GO enrichment</h2>
+<p>Annotated genes are often associated with diverse referenced information. Three onthology classes have been defined by the consortium : Biological process (BP), Cellular Component (CC) and Molecular Function (MF). Each of these classes contains what is called “terms” that define a gene function. Terms can be connected with each other forming a hierarchical tree. Top terms have a very general and are thus associated with a large number of genes. On the opposite, terms at the tails of the tree define very precise gene functions and can be associated with a single gene. The goal of the analysis is to extract terms of each of the three trees for which the list of differentially expressed genes of each cluster is associated with. This list of term then indicate whether a biological function can be associated with a gene set cluster with a particular expression pattern.</p>
+<p>GO enrichment analysis has been performed using the R package <a href="https://guangchuangyu.github.io/software/clusterProfiler/" title="ClusterProfiler">ClusterProfiler</a><a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. First, a database containing the whole list of <em>Candida albicans</em> annotated genes and their associated GO terms. The database has been built by associating the list of genes referenced in the <a href="https://www.ncbi.nlm.nih.gov/gene/?term=txid5478Organism:exp" title="Gene list NCBI">NCBI</a><a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a> website, the chromosomal feature table of the SC5314 imported from the <a href="http://www.candidagenome.org/download/chromosomal_feature_files/C_albicans_SC5314/" title="Chromosomal features">Candida genome db</a><a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>website and gene association also imported from the <a href="http://www.candidagenome.org/download/go/" title="GO association">Candida genome db</a><a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a>. All tables are then used to build the database using the <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/AnnotationForge/inst/doc/SQLForge.pdf" title="Annotation Forge">AnnotationForge</a><a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a> package. The <em>enrichGO()</em> function from the <a href="https://guangchuangyu.github.io/software/clusterProfiler/" title="ClusterProfiler">ClusterProfiler</a><a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a> package has been used to find GO terms associated with the gene set of each cluster.</p>
+</div>
+<div id="stringdbstring" class="section level2">
+<h2>7.2 STRINGdb<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a></h2>
+<p>The list of genes of each cluster can also be used to query the <a href="https://string-db.org/" title="STRINGdb">STRINGdb</a><a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a> database. STRING is a database of known and predicted protein-protein interactions. The interactions include direct (physical) and indirect (functional) associations; they stem from computational prediction, from knowledges transfer between organisms, and from interactions aggregated from other (primary) databases. Interactions in STRING are derived from five main sources (see <a href="#StringFig">fig6</a> and currently covers 24’584’628 proteins from 5’090 organisms. Each gene set is used to interrogate the STRING network. This result in a network in which nodes are genes from the set connected or not depending on known protein-protein interaction. All of this has been achieved using the R package <a href="https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html" title="STRINGdb package">STRINGdb</a><a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a>.</p>
+<p><a name="StringFig"></a></p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><img src="https://string-db.org/images/genome_context.png" alt="img" /> Genomic Context Predictions</th>
+<th><img src="https://string-db.org/images/experiment_title.png" alt="img" /> High-throughput Lab Experiments</th>
+<th><img src="https://string-db.org/images/conserved_coexpression.png" alt="img" /> (Conserved) Co-Expression</th>
+<th><img src="https://string-db.org/images/textmining_content.png" alt="img" /> Automated Textmining</th>
+<th><img src="https://string-db.org/images/database_content.png" alt="img" /> Previous Knowledge in Databases</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>fig6: source data feeding the STRINGdb database</em></p>
+</div>
+</div>
+<div id="appendix" class="section level1">
+<h1>8. Appendix</h1>
+<div id="anapurna-seq" class="section level2">
+<h2>8.1 ANAPURNA-seq</h2>
+</div>
+<div id="quick-start" class="section level2">
+<h2>0. Quick start</h2>
+<p>ANAPURNA-seq is designed to run on a UNIX-based system and <strong>requires <a href="https://docs.conda.io/en/latest/miniconda.html" title="miniconda">miniconda</a>, <a href="https://doc.ubuntu-fr.org/zenity" title="Zenity">zenity</a>, Bash 3.2 (or later) and <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java 8 (or later, up to 15)</a></strong>. The computer (or sever) running ANAPURNA-seq must also be connected to the internet.</p>
+<p>Start ANAPURNA-seq by running the <code>$ sh RUN_ANAPURNAseq.sh</code>. A sequence of windows will appear prompting the user to choose reference genomes.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>1. Introduction</h2>
+<div class="figure">
+<img src="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/ANAPURNA-seq.png" alt="" />
+<p class="caption">ANAPURNA</p>
+</div>
+<p>ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often <em>gene</em> or <em>CDS</em>). The result of a run is basically one or multiple “readcount.txt” files (see <em><a href="#fA.1">fig A.1</a></em>).</p>
+<p><a name="fA.1"></a><img src="/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png" alt="read-procession-steps" /></p>
+<p><em>fig A.1 : The various steps performed by ANAPURNA-seq</em></p>
+<p>ANAPURNA-seq is using various software from the Bioconda and Conda Forge channels. All softwares are listed in <a href="#table1.1">Table 1.1</a> with their corresponding function into the pipeline. The first step consists in compressing fastq.gz files by reordering them by similarity. This is achieved using the clumpify function from the <a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" title="bbmap"><em>bbmap</em></a><a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a> packages. This has the advantage to improve the speed of the downstream steps. Following compression, extremities of reads are trimmed to remove adaptors.</p>
+<p>Multiple steps of filtering are then applied on the compressed reads: Quality filtering, contamination removal, low complexity filtering, removal of artefacts. These are achieved using again the <a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" title="bbmap"><em>bbmap</em></a><a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a> packages. The last filtering step is the removal of rRNA using the <em><a href="https://github.com/biocore/sortmerna" title="sortmerna">sortmerna</a></em><a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a> package .</p>
+<p>After reads have been compressed, filtered and corrected, they are ready to be aligned to one or two reference genomes. This is achieved by using first the HiSAT <a href="http://subread.sourceforge.net/" title="subread">11</a> software and second the “featurecount” function of the <a href="http://subread.sourceforge.net/" title="subread"><em>subread</em></a> <a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a>package . The current list of available genomes are shown in <a href="#table1.2">Table 1.2</a>. At the end, of the whole procedure, QC reports and readcount table(s) are generated. QC report enables to check the quality of the reads pre- and post-processing. Readcount tables can then be used for different downstream analysis such as differential gene expression analysis.</p>
+<p>All the steps have been embedded in a <em>Nextflow</em> pipeline. Nextflow enables scalable and reproducible scientific workflows using software containers. It allows the adaptation of pipelines written in the most common scripting languages. Nextflow is based on the <em>data flow</em> programming model which greatly simplifies writing complex distributed pipelines. Parallelisation is implicitly defined by the processes input and output declarations. The resulting applications are inherently parallel and can scale-up or scale-out, transparently, without having to adapt to a specific platform architecture. This make the language perfectly suited to run on cluster architectures.</p>
+</div>
+<div id="procedure-to-run-anapurna-seq" class="section level2">
+<h2>2. Procedure to run ANAPURNA-seq</h2>
+<ol style="list-style-type: decimal">
+<li>Start ANAPURNA-seq by running the <code>$ sh RUN_ANAPURNAseq.sh</code></li>
+<li>Go to the folder where <em>fastq.gz</em> have been saved</li>
+<li>Select the first genome on which reads have to be aligned</li>
+<li>Select the second genome on which reads, not aligned to the first genome, have to be aligned. Following that step, a terminal window should appear and give you the progress of the processing.</li>
+<li>When the analysis is done the new message should appear prompting the user to remove or not temporary files. Click OK if you are sure everything has run properly otherwise, re-run ANAPURNA with the same setting.</li>
+<li>A last window should open indicating in which folder Results can be found</li>
+</ol>
+</div>
+<div id="notes" class="section level2">
+<h2>3. Notes</h2>
+<ul>
+<li>ANAPURNA-seq can be run stop at any time by selecting the terminal window showing the run progress and by clicking Ctrl+C</li>
+<li>As long as the “work” directory is not deleted from the working directory, all processes already completed are saved. This is useful in case the user wish to run the pipeline multiple times on the same dataset. For example, if the users want to run ANAPURNA a second time and align reads on another genome, none of the steps prior alignment will be performed again. Only the alignment and the featurecount steps. This leads to a large gain of time for the other runs.</li>
+</ul>
+</div>
+</div>
+<div id="table" class="section level1">
+<h1>Table</h1>
+<div id="table-1.1-list-of-packages-used-by-anapurna-seq" class="section level2">
+<h2>Table 1.1 : List of packages used by ANAPURNA-seq <a name="table1.1"></a></h2>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="24%" />
+<col width="55%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Version</th>
+<th>Function</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nextflow</td>
+<td>21.05.1.5556</td>
+<td>Parallelisation of processes</td>
+<td><a href="https://www.nextflow.io/" title="nextflow">3</a><a href="#fn29" class="footnote-ref" id="fnref29"><sup>29</sup></a></td>
+</tr>
+<tr class="even">
+<td>Zenity</td>
+<td>3.32.0</td>
+<td>GUI</td>
+<td><a href="https://doc.ubuntu-fr.org/zenity" title="Zenity">4</a><a href="#fn30" class="footnote-ref" id="fnref30"><sup>30</sup></a></td>
+</tr>
+<tr class="odd">
+<td>miniconda</td>
+<td>5.10.1</td>
+<td>Package management system and environment management system</td>
+<td><a href="https://docs.conda.io/en/latest/miniconda.html" title="miniconda">5</a><a href="#fn31" class="footnote-ref" id="fnref31"><sup>31</sup></a></td>
+</tr>
+<tr class="even">
+<td>Java</td>
+<td>openjdk 11.0.11 2021-04-20</td>
+<td>Development environment for building applications and components</td>
+<td><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">6</a><a href="#fn32" class="footnote-ref" id="fnref32"><sup>32</sup></a></td>
+</tr>
+<tr class="odd">
+<td>fastqc</td>
+<td>0.11.9</td>
+<td>reads QC report</td>
+<td><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" title="fastqc">7</a><a href="#fn33" class="footnote-ref" id="fnref33"><sup>33</sup></a></td>
+</tr>
+<tr class="even">
+<td>multiqc</td>
+<td>1.10.1</td>
+<td>combining multiple QC reports in a single file</td>
+<td><a href="https://multiqc.info/" title="multiqc">8</a><a href="#fn34" class="footnote-ref" id="fnref34"><sup>34</sup></a></td>
+</tr>
+<tr class="odd">
+<td>bbmap</td>
+<td>38.90</td>
+<td>Removal of adaptors and contamination. Quality, artefacts, and low complexity removal.</td>
+<td><a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" title="bbmap">9</a><a href="#fn35" class="footnote-ref" id="fnref35"><sup>35</sup></a></td>
+</tr>
+<tr class="even">
+<td>sortmerna</td>
+<td>5.3.3</td>
+<td>Removal of rRNA from various species</td>
+<td><a href="https://github.com/biocore/sortmerna" title="sortmerna">10</a><a href="#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a></td>
+</tr>
+<tr class="odd">
+<td>samtools</td>
+<td>1.12</td>
+<td>Conversion of files from alignment in <em>.bam</em></td>
+<td><a href="http://www.htslib.org/" title="samtools">13</a><a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a></td>
+</tr>
+<tr class="even">
+<td>hisat2</td>
+<td>2.2.1</td>
+<td>Alignment of reads to a genome</td>
+<td><a href="http://daehwankimlab.github.io/hisat2/" title="hisat2">11</a><a href="#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a></td>
+</tr>
+<tr class="odd">
+<td>subread</td>
+<td>2.0.1</td>
+<td>Counting the number of reads associated to a feature (<em>featurecount</em>)</td>
+<td><a href="http://subread.sourceforge.net/" title="subread">12</a><a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="table-1.2-list-of-genomes-currently-available-in-anapurna-seq" class="section level2">
+<h2>Table 1.2: List of genomes currently available in ANAPURNA-seq <a name="table1.2"></a></h2>
+<table>
+<thead>
+<tr class="header">
+<th>Specie</th>
+<th>Strain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Candida albicans</em></td>
+<td>SC5314 <a href="http://www.candidagenome.org" title="Candida genome database">14</a><a href="#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a></td>
+</tr>
+<tr class="even">
+<td>Candida glabrata</td>
+<td>DSY562</td>
+</tr>
+<tr class="odd">
+<td>Mus musculus</td>
+<td>GRCm38 <a href="https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/latest_assembly_versions/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.fna.gz" title="Mouse reference genome">15</a><a href="#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a></td>
+</tr>
+<tr class="even">
+<td>Homo sapiens</td>
+<td>GRCh38 <a href="ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" title="Human reference genome">16</a><a href="#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a></td>
+</tr>
+<tr class="odd">
+<td>Mucor circinelloides</td>
+<td>1006Phmd</td>
+</tr>
+<tr class="even">
+<td>Rhizopus microsporus</td>
+<td>ATCC52813</td>
+</tr>
+<tr class="odd">
+<td>Candida lusitaniae</td>
+<td>DSY4606_V37</td>
+</tr>
+<tr class="even">
+<td>Aspergillus fumigatus</td>
+<td>Af_293B</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="table-1.3-clinical-isolate-pair" class="section level1">
+<h1>Table 1.3: Clinical isolate pair <a name="table1.3"></a></h1>
+<table>
+<thead>
+<tr class="header">
+<th>Pair name</th>
+<th>Low damaging isolate</th>
+<th>high damaging isolate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BRAUN</td>
+<td>CEC3617</td>
+<td>CEC3605</td>
+</tr>
+<tr class="even">
+<td>GREEN</td>
+<td>CEC3678</td>
+<td>CEC3621</td>
+</tr>
+<tr class="odd">
+<td>BLUE</td>
+<td>CEC3609</td>
+<td>CEC3672</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>University of Zurich <a href="https://www.vetvir.uzh.ch/en/Research/Immunology.html" class="uri">https://www.vetvir.uzh.ch/en/Research/Immunology.html</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Institut de Microbiology Lausanne CHUV <a href="https://www.chuv.ch/fr/microbiologie/imu-home/recherche/groupes-de-recherche/dominique-sanglard" class="uri">https://www.chuv.ch/fr/microbiologie/imu-home/recherche/groupes-de-recherche/dominique-sanglard</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>performed by Kontxi Martinez, University of Zurich<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Genomic Technologies Facility, Lausanne, Switzerland <a href="https://wp.unil.ch/gtf/" class="uri">https://wp.unil.ch/gtf/</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://github.com/Navrique/ANAPURNAseq" class="uri">https://github.com/Navrique/ANAPURNAseq</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>Differential gene expression analysis<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>log2 fold change<a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>Low Damaging isolate<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>High Damaging isolate<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p><a href="https://kasperdanielhansen.github.io/genbioconductor/html/limma.html" class="uri">https://kasperdanielhansen.github.io/genbioconductor/html/limma.html</a><a href="#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>log2 fold change<a href="#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p><a href="https://bioconductor.org/packages/release/bioc/html/M3C.html" class="uri">https://bioconductor.org/packages/release/bioc/html/M3C.html</a><a href="#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p><a href="https://xlinux.nist.gov/dads/HTML/manhattanDistance.html" class="uri">https://xlinux.nist.gov/dads/HTML/manhattanDistance.html</a><a href="#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p><a href="http://geneontology.org/" class="uri">http://geneontology.org/</a><a href="#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p><a href="https://string-db.org/" class="uri">https://string-db.org/</a><a href="#fnref15" class="footnote-back">↩︎</a></p></li>
+<li id="fn16"><p><a href="https://guangchuangyu.github.io/software/clusterProfiler/" class="uri">https://guangchuangyu.github.io/software/clusterProfiler/</a><a href="#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn17"><p><a href="https://www.ncbi.nlm.nih.gov/gene/?term=txid5478" class="uri">https://www.ncbi.nlm.nih.gov/gene/?term=txid5478</a><a href="#fnref17" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p><a href="http://www.candidagenome.org/download/chromosomal_feature_files/C_albicans_SC5314/" class="uri">http://www.candidagenome.org/download/chromosomal_feature_files/C_albicans_SC5314/</a><a href="#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn19"><p><a href="http://www.candidagenome.org/download/go/" class="uri">http://www.candidagenome.org/download/go/</a><a href="#fnref19" class="footnote-back">↩︎</a></p></li>
+<li id="fn20"><p><a href="https://www.bioconductor.org/packages/release/bioc/vignettes/AnnotationForge/inst/doc/SQLForge.pdf" class="uri">https://www.bioconductor.org/packages/release/bioc/vignettes/AnnotationForge/inst/doc/SQLForge.pdf</a><a href="#fnref20" class="footnote-back">↩︎</a></p></li>
+<li id="fn21"><p><a href="https://guangchuangyu.github.io/software/clusterProfiler/" class="uri">https://guangchuangyu.github.io/software/clusterProfiler/</a><a href="#fnref21" class="footnote-back">↩︎</a></p></li>
+<li id="fn22"><p><a href="https://string-db.org/" class="uri">https://string-db.org/</a><a href="#fnref22" class="footnote-back">↩︎</a></p></li>
+<li id="fn23"><p><a href="https://string-db.org/" class="uri">https://string-db.org/</a><a href="#fnref23" class="footnote-back">↩︎</a></p></li>
+<li id="fn24"><p><a href="https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html" class="uri">https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html</a><a href="#fnref24" class="footnote-back">↩︎</a></p></li>
+<li id="fn25"><p><a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" class="uri">https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/</a><a href="#fnref25" class="footnote-back">↩︎</a></p></li>
+<li id="fn26"><p><a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" class="uri">https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/</a><a href="#fnref26" class="footnote-back">↩︎</a></p></li>
+<li id="fn27"><p><a href="https://github.com/biocore/sortmerna" class="uri">https://github.com/biocore/sortmerna</a><a href="#fnref27" class="footnote-back">↩︎</a></p></li>
+<li id="fn28"><p><a href="http://subread.sourceforge.net/" class="uri">http://subread.sourceforge.net/</a><a href="#fnref28" class="footnote-back">↩︎</a></p></li>
+<li id="fn29"><p><a href="https://www.nextflow.io/" class="uri">https://www.nextflow.io/</a><a href="#fnref29" class="footnote-back">↩︎</a></p></li>
+<li id="fn30"><p><a href="https://doc.ubuntu-fr.org/zenity" class="uri">https://doc.ubuntu-fr.org/zenity</a><a href="#fnref30" class="footnote-back">↩︎</a></p></li>
+<li id="fn31"><p><a href="https://docs.conda.io/en/latest/miniconda.html" class="uri">https://docs.conda.io/en/latest/miniconda.html</a><a href="#fnref31" class="footnote-back">↩︎</a></p></li>
+<li id="fn32"><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" class="uri">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a><a href="#fnref32" class="footnote-back">↩︎</a></p></li>
+<li id="fn33"><p><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/" class="uri">https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a><a href="#fnref33" class="footnote-back">↩︎</a></p></li>
+<li id="fn34"><p><a href="https://multiqc.info/" class="uri">https://multiqc.info/</a><a href="#fnref34" class="footnote-back">↩︎</a></p></li>
+<li id="fn35"><p><a href="https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/" class="uri">https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/</a><a href="#fnref35" class="footnote-back">↩︎</a></p></li>
+<li id="fn36"><p><a href="https://github.com/biocore/sortmerna" class="uri">https://github.com/biocore/sortmerna</a><a href="#fnref36" class="footnote-back">↩︎</a></p></li>
+<li id="fn37"><p><a href="http://www.htslib.org/" class="uri">http://www.htslib.org/</a><a href="#fnref37" class="footnote-back">↩︎</a></p></li>
+<li id="fn38"><p><a href="http://daehwankimlab.github.io/hisat2/" class="uri">http://daehwankimlab.github.io/hisat2/</a><a href="#fnref38" class="footnote-back">↩︎</a></p></li>
+<li id="fn39"><p><a href="http://subread.sourceforge.net/" class="uri">http://subread.sourceforge.net/</a><a href="#fnref39" class="footnote-back">↩︎</a></p></li>
+<li id="fn40"><p><a href="http://www.candidagenome.org" class="uri">http://www.candidagenome.org</a><a href="#fnref40" class="footnote-back">↩︎</a></p></li>
+<li id="fn41"><p><a href="https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/latest_assembly_versions/GCF_000001636.27_GRCm39/GCF_000001636.27_GRCm39_genomic.fna.gz" class="uri">https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/latest_assembly_versions/GCF_000001636.27_GRCm39/GCF_000001636.27_GRCm39_genomic.fna.gz</a><a href="#fnref41" class="footnote-back">↩︎</a></p></li>
+<li id="fn42"><p><a href="ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" class="uri">ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz</a><a href="#fnref42" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -490,6 +867,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
