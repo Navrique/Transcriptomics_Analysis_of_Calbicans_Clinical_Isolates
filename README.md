@@ -207,7 +207,7 @@ Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`. A sequence of wind
 
 #### 1. Introduction
 
-![ANAPURNA](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/ANAPURNA-seq.png)
+![ANAPURNA](Figures/ANAPURNA-seq.png)
 
 ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often *gene* or *CDS*). The result of a run is basically one or multiple "readcount.txt" files (see *[fig A.1](#fA.1)*).	
 
