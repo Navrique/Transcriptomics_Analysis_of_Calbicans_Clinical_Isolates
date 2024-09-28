@@ -143,13 +143,13 @@ This step might not be essential since all samples are from the same batch. This
 
 Different visualisation can be used to observe the correction of the batch effect. PCA plot is a scatter where each dot is a sample. Ideally, all replicates from a given condition should appear close to each other, indicating a good reproducibility. Our strategy based on the estimation of variables inducing noise may reduce the distance between replicates on the PCA plot (see [fig 3](#f3)).
 
-<a name="f3"></a>![PCA](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BatchEffectRemoval_PCA.png) *fig 3 : Sample visualisation on a PCA plot*  
+<a name="f3"></a>![PCA](Figures/BatchEffectRemoval_PCA.png) *fig 3 : Sample visualisation on a PCA plot*  
 
 ## 5. Differential gene expression analysis <a name="5."></a>
 
 Differential gene expression analysis (DGEA[^DGEA]) consist in the comparison of the number of read counts associated with each genes between two conditions.  Since the dataset is a mix of multiple conditions, the DGEA can be design in different ways depending on whether want to identify genes differencially express between the two isolates, the three time point or the presence or absence of keratinocytes (see [fig1.](#f1)). For example, if the main question is to address whether genes are differentially expressed between the two isolates, the DGEA will be performed by comparing each samples of the Isolate 1 against the sample of the Isolate 2 in the same time and FP/TR conditions. This end up by a matrix of LFC[^18] values where to each line correspond a gene and to each column correspond a single comparison (see [fig 4.](#f4)).   
 
-<a name="f4"></a>![LFC](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/DGEA_BRAUN_Isolate_plot_heatmap-1.png)
+<a name="f4"></a>![LFC](Figures/DGEA_BRAUN_Isolate_plot_heatmap-1.png)
 
 *Fig 4.: Log2(Fold change) matrix. The analysis focus on the comparison between the CEC3617 (LD[^LD]) and the CEC3605 (HD[^HD]), The BRAUN pair*
 
