@@ -113,7 +113,7 @@ The first step consists in removing features, here genes, with no or low reads i
 
 <a name="f2"></a>
 
-![Library_size](Figures/BRAUNsequencing depth.png)
+![Library_size](Figures/BRAUNsequencing_depth.png)
 
 *fig 2 : Library size of the BRAUN pair run dataset*
 
@@ -125,7 +125,7 @@ The [calcNormFactors](https://www.rdocumentation.org/packages/edgeR/versions/4.1
 
 The boxplot in [fig 3.](#f3) represents the distribution of genes **log2(cpm)** prior and after correction. **cpm** are *count per milion* of read.
 
-<a name="f3"></a>![TMMCorrection](Figures/BRAUNTMM correction-1.png)
+<a name="f3"></a>![TMMCorrection](Figures/BRAUNTMM_correction-1.png)
 
 *fig 2 : TMM correction* 
 
