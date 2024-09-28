@@ -113,7 +113,7 @@ The first step consists in removing features, here genes, with no or low reads i
 
 <a name="f2"></a>
 
-![Library_size](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BRAUNsequencing depth.png)
+![Library_size](Figures/BRAUNsequencing depth.png)
 
 *fig 2 : Library size of the BRAUN pair run dataset*
 
@@ -125,7 +125,7 @@ The [calcNormFactors](https://www.rdocumentation.org/packages/edgeR/versions/4.1
 
 The boxplot in [fig 3.](#f3) represents the distribution of genes **log2(cpm)** prior and after correction. **cpm** are *count per milion* of read.
 
-<a name="f3"></a>![TMMCorrection](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/BRAUNTMM correction-1.png)
+<a name="f3"></a>![TMMCorrection](Figures/BRAUNTMM correction-1.png)
 
 *fig 2 : TMM correction* 
 
@@ -211,7 +211,7 @@ Start ANAPURNA-seq by running the ` $ sh RUN_ANAPURNAseq.sh`. A sequence of wind
 
 ANAPURNAseq (Automated Nextflow Alignment Pipeline for Unprocessed RNA-seq) perform first, various read correction step, then align corrected reads to one or two reference genomes and finally count the number of reads that can be associated to a chosen feature (often *gene* or *CDS*). The result of a run is basically one or multiple "readcount.txt" files (see *[fig A.1](#fA.1)*).	
 
-<a name="fA.1"></a>![read-procession-steps](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/ANAPURNA-seq/Icons/20201209-Scheme-ANAPURNA.png)
+<a name="fA.1"></a>![read-procession-steps](https://github.com/Navrique/ANAPURNAseq/blob/dev/Icons/20201209-Scheme-ANAPURNA.png)
 
 *fig A.1 : The various steps performed by ANAPURNA-seq* 
 
