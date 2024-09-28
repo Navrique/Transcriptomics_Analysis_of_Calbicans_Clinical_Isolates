@@ -79,7 +79,7 @@ Quantify the amount of RNA using Nano-drop.
 
 <a name="f1"></a>
 
-![ExpCond](/media/edurandau/DATA/Eric_Durandau/Sanglard/Labbook/Workbench/Bioinformatics/GREEN-BRAUN-data_exploration/Figures/ExpCond.svg)
+![ExpCond](Figures/ExpCond.svg)
 
 *fig1: experimental conditions*
 
